@@ -4,11 +4,13 @@ import { AppService } from './app.service';
 import { NemoModule } from './nemo/nemo.module';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config/validationSchema';
+import { NemoConfig } from './config/NemoConfig';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [NemoConfig],
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
       validationSchema,
     }),
