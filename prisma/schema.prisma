@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model ProblemV2 {
+  uuid              String  @id @default(uuid()) @map("PROBLEM_V2_UUID") @db.VarChar(36)
+  title             String  @map("PROBLEM_V2_TITLE")
+  level             Int     @map("PROBLEM_V2_LEVEL")
+  levelText         String  @map("PROBLEM_V2_LEVEL_TEXT")
+  answerRate        Float   @map("PROBLEM_V2_ANSWER_RATE")
+  submitCount       Int     @map("PROBLEM_V2_SUBMIT_COUNT")
+  timeout           Int     @map("PROBLEM_V2_TIMEOUT")
+  memoryLimit       Int     @map("PROBLEM_V2_MEMORY_LIMIT")
+  answerCount       Int     @map("PROBLEM_V2_ANSWER_COUNT")
+  answerPeopleCount Int     @map("PROBLEM_V2_ANSWER_PEOPLE_COUNT")
+  source            String  @map("PROBLEM_V2_SOURCE") @db.VarChar(255)
+  sourceUrl         String  @map("PROBLEM_V2_SOURCE_URL") @db.VarChar(255)
+  sourceId          String  @map("PROBLEM_V2_SOURCE_ID") @db.VarChar(255)
+  content           String  @map("PROBLEM_V2_CONTENT") @db.Text()
+  limit             String? @map("PROBLEM_V2_LIMIT") @db.Text()
+  hint              String? @map("PROBLEM_V2_HINT") @db.Text()
+  subTask           String? @map("PROBLEM_V2_SUB_TASK") @db.Text()
+  input             String? @map("PROBLEM_V2_INPUT") @db.Text()
+  output            String? @map("PROBLEM_V2_OUTPUT") @db.Text()
+  protocol          String? @map("PROBLEM_V2_PROTOCOL") @db.Text()
+  etc               String? @map("PROBLEM_V2_ETC") @db.Text()
+
+  additionalTimeAllowed Boolean                @default(false) @map("PROBLEM_V2_ADDITIONAL_TIME_ALLOWED")
+  isSpecialJudge        Boolean                @default(false) @map("PROBLEM_V2_IS_SPECIAL_JUDGE")
+  isSubTask             Boolean                @default(false) @map("PROBLEM_V2_IS_SUB_TASK")
+  isFunction            Boolean                @default(false) @map("PROBLEM_V2_IS_FUNCTION")
+  isInteractive         Boolean                @default(false) @map("PROBLEM_V2_IS_INTERACTIVE")
+  isTwoStep             Boolean                @default(false) @map("PROBLEM_V2_IS_TWO_STEP")
+  isClass               Boolean                @default(false) @map("PROBLEM_V2_IS_CLASS")
+  createdAt             DateTime               @default(now()) @map("PROBLEM_V2_CREATED_AT")
+  updatedAt             DateTime               @updatedAt @map("PROBLEM_V2_UPDATED_AT")
+  inputOutputList       ProblemV2InputOutput[]
+  typeList              ProblemV2Type[]
+
+  @@index([source, sourceId])
+  @@index([answerRate])
+  @@index([submitCount])
+  @@index([level, answerRate])
+  @@index([level, submitCount])
+}
+
+model ProblemV2Type {
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  problem     ProblemV2 @relation(fields: [problemUuid], references: [uuid], onDelete: Cascade)
+  problemUuid String    @db.VarChar(36)
+
+  @@index([problemUuid])
+}
+
+model ProblemV2InputOutput {
+  id        Int      @id @default(autoincrement())
+  order     Int
+  input     String   @db.VarChar(255)
+  output    String   @db.VarChar(255)
+  content   String?  @db.Text()
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  problemUuid String    @db.VarChar(36)
+  problem     ProblemV2 @relation(fields: [problemUuid], references: [uuid], onDelete: Cascade)
+
+  @@index([problemUuid])
+}
