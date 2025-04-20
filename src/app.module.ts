@@ -5,6 +5,7 @@ import { NemoModule } from './nemo/nemo.module';
 import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config/validationSchema';
 import { NemoConfig } from './config/NemoConfig';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { NemoConfig } from './config/NemoConfig';
       validationSchema,
     }),
     NemoModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
