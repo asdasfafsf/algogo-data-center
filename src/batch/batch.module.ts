@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common';
+import { JobRegistry } from './job-registry';
+import { DiscoveryModule } from '@nestjs/core';
 
-@Module({})
+@Module({
+  imports: [DiscoveryModule],
+  providers: [JobRegistry],
+})
 export class BatchModule {}
