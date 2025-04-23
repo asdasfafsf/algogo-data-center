@@ -1,9 +1,5 @@
 import 'reflect-metadata';
+import { DiscoveryService } from '@nestjs/core';
+import { JobKey } from '../types/job.type';
 
-export const JOB_KEY = Symbol('JOB_KEY');
-
-export function JobHandler(key: string) {
-  return (target: (...args: any[]) => any) => {
-    Reflect.defineMetadata(JOB_KEY, key, target);
-  };
-}
+export const JobHandler = DiscoveryService.createDecorator<JobKey>();
