@@ -7,6 +7,7 @@ import { validationSchema } from './config/validationSchema';
 import { NemoConfig } from './config/NemoConfig';
 import { PrismaModule } from './prisma/prisma.module';
 import { BatchModule } from './batch/batch.module';
+import { DiscoveryModule } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { BatchModule } from './batch/batch.module';
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
       validationSchema,
     }),
+    DiscoveryModule,
     NemoModule,
     PrismaModule,
     BatchModule,
