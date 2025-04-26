@@ -8,6 +8,7 @@ import { NemoConfig } from './config/NemoConfig';
 import { PrismaModule } from './prisma/prisma.module';
 import { BatchModule } from './batch/batch.module';
 import { DiscoveryModule } from '@nestjs/core';
+import { WorkerModule } from './worker/worker.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DiscoveryModule } from '@nestjs/core';
     NemoModule,
     PrismaModule,
     BatchModule,
+    WorkerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
