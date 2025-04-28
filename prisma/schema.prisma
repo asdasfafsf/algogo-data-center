@@ -13,6 +13,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model BatchDefinition {
+  id          Int         @id @default(autoincrement()) @map("BATCH_DEFINITION_ID")
+  name        String      @map("BATCH_DEFINITION_NAME")
+  cron        String      @map("BATCH_DEFINITION_CRON")
+  description String      @map("BATCH_DEFINITION_DESCRIPTION") @db.Text()
+  createdAt   DateTime    @default(now()) @map("BATCH_DEFINITION_CREATED_AT")
+  updatedAt   DateTime    @updatedAt @map("BATCH_DEFINITION_UPDATED_AT")
+  stepList    BatchStep[]
+}
+
+model BatchStep {
+  id          Int      @id @default(autoincrement()) @map("BATCH_STEP_ID")
+  name        String   @map("BATCH_STEP_NAME")
+  description String   @map("BATCH_STEP_DESCRIPTION") @db.Text()
+  createdAt   DateTime @default(now()) @map("BATCH_STEP_CREATED_AT")
+  updatedAt   DateTime @updatedAt @map("BATCH_STEP_UPDATED_AT")
+
+  batchDefinitionId Int             @map("BATCH_DEFINITION_ID")
+  batchDefinition   BatchDefinition @relation(fields: [batchDefinitionId], references: [id])
+
+  @@index([batchDefinitionId])
+}
+
 model ProblemV2 {
   uuid              String  @id @default(uuid()) @map("PROBLEM_V2_UUID") @db.VarChar(36)
   title             String  @map("PROBLEM_V2_TITLE")
