@@ -1,10 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { JobRegistry } from './job-registry';
 import { DiscoveryModule } from '@nestjs/core';
 import { DispatcherService } from './dispatcher.service';
+import { BatchService } from './batch.service';
+import { BatchRepository } from './batch.repository';
+import { PrismaModule } from '../prisma/prisma.module';
 @Module({
-  imports: [DiscoveryModule],
-  providers: [JobRegistry, DispatcherService],
-  exports: [DispatcherService],
+  imports: [DiscoveryModule, PrismaModule],
+  providers: [JobRegistry, DispatcherService, BatchService, BatchRepository],
+  exports: [DispatcherService, JobRegistry],
 })
-export class BatchModule {}
+export class BatchModule implements OnModuleInit {
+  constructor() {}
+  onModuleInit() {}
+}
