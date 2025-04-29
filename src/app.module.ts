@@ -9,6 +9,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { BatchModule } from './batch/batch.module';
 import { DiscoveryModule } from '@nestjs/core';
 import { WorkerModule } from './worker/worker.module';
+import { OrchestratorModule } from './orchestrator/orchestrator.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { WorkerModule } from './worker/worker.module';
     PrismaModule,
     BatchModule,
     WorkerModule,
+    OrchestratorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
