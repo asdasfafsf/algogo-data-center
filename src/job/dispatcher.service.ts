@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JobRegistry } from './job-registry';
-import { JobKey } from '../common/types/job.type';
+import { JobKey } from './types/job.type';
 
 @Injectable()
 export class DispatcherService {

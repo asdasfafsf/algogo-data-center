@@ -1,8 +1,8 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
-import { JobHandler } from '../common/decorators/job-handler.decorator';
-import { JobRunner } from '../common/interfaces/job-runner.interface';
-import { JobKey } from 'src/common/types/job.type';
+import { JobHandler } from './decorators/job-handler.decorator';
+import { JobRunner } from './interfaces/job-runner.interface';
+import { JobKey } from 'src/job/types/job.type';
 
 @Injectable()
 export class JobRegistry implements OnModuleInit {

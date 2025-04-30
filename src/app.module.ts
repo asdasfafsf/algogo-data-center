@@ -10,6 +10,7 @@ import { BatchModule } from './batch/batch.module';
 import { DiscoveryModule } from '@nestjs/core';
 import { WorkerModule } from './worker/worker.module';
 import { OrchestratorModule } from './orchestrator/orchestrator.module';
+import { JobModule } from './job/job.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { OrchestratorModule } from './orchestrator/orchestrator.module';
     BatchModule,
     WorkerModule,
     OrchestratorModule,
+    JobModule,
   ],
   controllers: [AppController],
   providers: [AppService],
