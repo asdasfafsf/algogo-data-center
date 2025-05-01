@@ -64,7 +64,6 @@ model Job {
   startedAt       DateTime @map("JOB_STARTED_AT")
   finishedAt      DateTime @map("JOB_FINISHED_AT")
   elapsedTime     Int      @map("JOB_ELAPSED_TIME")
-  step            String   @map("JOB_STEP")
   state           String   @map("JOB_STATE")
   request         Json     @map("JOB_REQUEST")
   result          Json     @map("JOB_RESULT")
@@ -74,6 +73,8 @@ model Job {
   @@unique([uuid, name])
   @@index([uuid, name])
   @@index([batchInstanceNo])
+  @@index([startedAt])
+  @@index([finishedAt])
 }
 
 model ProblemV2 {
