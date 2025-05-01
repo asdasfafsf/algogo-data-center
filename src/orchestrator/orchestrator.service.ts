@@ -6,7 +6,9 @@ export class OrchestratorService {
   constructor(private readonly orchestratorRegistry: OrchestratorRegistry) {}
 
   async orchestrate(key: OrchestratorKey, data: any) {
-    const orchestrator = this.orchestratorRegistry.get(key);
-    return orchestrator.orchestrate(data);
+    try {
+      const orchestrator = this.orchestratorRegistry.get(key);
+      return orchestrator.orchestrate(data);
+    } catch {}
   }
 }
