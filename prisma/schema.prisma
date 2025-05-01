@@ -21,20 +21,8 @@ model BatchDefinition {
   createdAt   DateTime @default(now()) @map("BATCH_DEFINITION_CREATED_AT")
   updatedAt   DateTime @updatedAt @map("BATCH_DEFINITION_UPDATED_AT")
 
-  batchResultList   BatchResult[]
   stepList          BatchStep[]
   batchInstanceList BatchInstance[]
-}
-
-model BatchResult {
-  no                Int             @id @default(autoincrement()) @map("BATCH_RESULT_NO")
-  batchDefinitionNo Int             @map("BATCH_DEFINITION_NO")
-  createdAt         DateTime        @default(now()) @map("BATCH_RESULT_CREATED_AT")
-  updatedAt         DateTime        @updatedAt @map("BATCH_RESULT_UPDATED_AT")
-  result            String          @map("BATCH_RESULT_RESULT")
-  batchDefinition   BatchDefinition @relation(fields: [batchDefinitionNo], references: [no])
-
-  @@index([batchDefinitionNo])
 }
 
 model BatchStep {
