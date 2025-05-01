@@ -29,6 +29,9 @@ importers:
       '@prisma/client':
         specifier: ^6.6.0
         version: 6.6.0(prisma@6.6.0(typescript@5.8.3))(typescript@5.8.3)
+      cron:
+        specifier: ^4.3.0
+        version: 4.3.0
       joi:
         specifier: ^17.13.3
         version: 17.13.3
