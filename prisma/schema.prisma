@@ -52,15 +52,15 @@ model BatchStep {
 }
 
 model BatchInstance {
-  no                Int      @id @default(autoincrement()) @map("BATCH_INSTANCE_NO")
-  batchDefinitionNo Int      @map("BATCH_DEFINITION_NO")
-  state             String   @map("BATCH_INSTANCE_STATE")
-  createdAt         DateTime @default(now()) @map("BATCH_INSTANCE_CREATED_AT")
-  updatedAt         DateTime @updatedAt @map("BATCH_INSTANCE_UPDATED_AT")
-  startedAt         DateTime @map("BATCH_INSTANCE_STARTED_AT")
-  finishedAt        DateTime @map("BATCH_INSTANCE_FINISHED_AT")
-  elapsedTime       Int      @map("BATCH_INSTANCE_ELAPSED_TIME")
-  data              Json     @map("BATCH_INSTANCE_DATA")
+  no                Int       @id @default(autoincrement()) @map("BATCH_INSTANCE_NO")
+  batchDefinitionNo Int       @map("BATCH_DEFINITION_NO")
+  state             String    @map("BATCH_INSTANCE_STATE")
+  createdAt         DateTime  @default(now()) @map("BATCH_INSTANCE_CREATED_AT")
+  updatedAt         DateTime? @updatedAt @map("BATCH_INSTANCE_UPDATED_AT")
+  startedAt         DateTime? @map("BATCH_INSTANCE_STARTED_AT")
+  finishedAt        DateTime? @map("BATCH_INSTANCE_FINISHED_AT")
+  elapsedTime       Int?      @map("BATCH_INSTANCE_ELAPSED_TIME")
+  data              Json?     @map("BATCH_INSTANCE_DATA")
 
   batchDefinition BatchDefinition @relation(fields: [batchDefinitionNo], references: [no])
 
