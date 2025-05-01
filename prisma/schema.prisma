@@ -67,10 +67,28 @@ model BatchInstance {
   @@index([batchDefinitionNo, no])
 }
 
-model Job {
+model JobDefinition {
+  no          Int      @id @default(autoincrement()) @map("JOB_DEFINITION_NO")
+  name        String   @map("JOB_DEFINITION_NAME")
+  description String   @map("JOB_DEFINITION_DESCRIPTION") @db.Text()
+  createdAt   DateTime @default(now()) @map("JOB_DEFINITION_CREATED_AT")
+  updatedAt   DateTime @updatedAt @map("JOB_DEFINITION_UPDATED_AT")
+}
+
+model JobStep {
+  no          Int      @id @default(autoincrement()) @map("JOB_STEP_NO")
+  order       Int      @map("JOB_STEP_ORDER")
+  name        String   @map("JOB_STEP_NAME")
+  description String   @map("JOB_STEP_DESCRIPTION") @db.Text()
+  createdAt   DateTime @default(now()) @map("JOB_STEP_CREATED_AT")
+  updatedAt   DateTime @updatedAt @map("JOB_STEP_UPDATED_AT")
+}
+
+model JobInstance {
   no              Int      @id @default(autoincrement()) @map("JOB_NO")
   uuid            String   @map("JOB_UUID")
   name            String   @map("JOB_NAME")
+  step            String   @map("JOB_STEP")
   batchInstanceNo Int?     @map("BATCH_INSTANCE_NO")
   createdAt       DateTime @default(now()) @map("JOB_CREATED_AT")
   updatedAt       DateTime @updatedAt @map("JOB_UPDATED_AT")
