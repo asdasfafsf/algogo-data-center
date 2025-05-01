@@ -7,8 +7,10 @@ export class DispatcherService {
   constructor(private readonly jobRegistry: JobRegistry) {}
 
   async dispatch(key: JobKey, data: any) {
-    const job = this.jobRegistry.get(key);
-    const result = await job.run(data);
-    return result;
+    try {
+      const job = this.jobRegistry.get(key);
+      const result = await job.run(data);
+      return result;
+    } catch {}
   }
 }
