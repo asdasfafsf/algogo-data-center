@@ -2,7 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
 import { JobHandler } from './decorators/job-handler.decorator';
 import { JobRunner } from './interfaces/job-runner.interface';
-import { JobKey } from 'src/job/types/job.type';
+import { JobHandlerKey } from 'src/job/types/job.type';
 
 @Injectable()
 export class JobRegistry implements OnModuleInit {
@@ -31,7 +31,7 @@ export class JobRegistry implements OnModuleInit {
     }
   }
 
-  get(key: JobKey): JobRunner {
+  get(key: JobHandlerKey): JobRunner {
     const runner = this.jobs.get(key);
     return runner;
   }
