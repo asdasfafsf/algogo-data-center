@@ -13,7 +13,6 @@ import { OrchestratorModule } from './orchestrator/orchestrator.module';
 import { JobModule } from './job/job.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { BullMQConfig } from './config/BullMQConfig';
-import { BullModule } from '@nestjs/bullmq';
 
 @Module({
   imports: [
@@ -23,17 +22,9 @@ import { BullModule } from '@nestjs/bullmq';
       envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
       validationSchema,
     }),
-    BullModule.forRootAsync({
-      useFactory: async (bullmqConfig: ConfigType<typeof BullMQConfig>) => ({
-        connection: {
-          host: bullmqConfig.host,
-          port: bullmqConfig.port,
-          password: bullmqConfig.password,
-        },
-      }),
-      inject: [BullMQConfig.KEY],
+    CacheModule.register({
+      isGlobal: true,
     }),
-    CacheModule.register(),
     DiscoveryModule,
     NemoModule,
     PrismaModule,

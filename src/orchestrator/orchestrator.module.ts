@@ -1,10 +1,24 @@
 import { Module } from '@nestjs/common';
 import { OrchestratorService } from './orchestrator.service';
-import { OrchestratorRegistry } from './orchestrator-registry';
 import { DiscoveryModule } from '@nestjs/core';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { OrchestratorRepository } from './orchestrator.repository';
+import { BullModule } from '@nestjs/bullmq';
+import { BullMQConfig } from 'src/config/BullMQConfig';
+import { ConfigType } from '@nestjs/config';
 @Module({
-  providers: [OrchestratorService, OrchestratorRegistry],
+  providers: [OrchestratorService, OrchestratorRepository],
   exports: [OrchestratorService],
-  imports: [DiscoveryModule],
+  imports: [
+    PrismaModule,
+    DiscoveryModule,
+    BullModule.registerFlowProducerAsync({
+      useFactory: async (bullmqConfig: ConfigType<typeof BullMQConfig>) => ({
+        connection: bullmqConfig,
+        queueName: bullmqConfig.queueName,
+      }),
+      inject: [BullMQConfig.KEY],
+    }),
+  ],
 })
 export class OrchestratorModule {}
