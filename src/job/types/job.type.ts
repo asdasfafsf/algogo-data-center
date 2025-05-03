@@ -1,3 +1,4 @@
-import { JOB_KEY } from '../constants/job.constants';
+import { JOB_HANDLER_MAP } from '../constants/job.constants';
 
-export type JobKey = (typeof JOB_KEY)[keyof typeof JOB_KEY];
+export type JobHandlerKey =
+  (typeof JOB_HANDLER_MAP)[keyof typeof JOB_HANDLER_MAP];

@@ -4,4 +4,9 @@ export const validationSchema = Joi.object({
   NEMO_URL: Joi.string().required(),
   NODE_ENV: Joi.string().valid('local', 'development', 'production').required(),
   SERVER_PORT: Joi.number().required(),
+
+  BULLMQ_HOST: Joi.string().required(),
+  BULLMQ_PORT: Joi.number().required(),
+  BULLMQ_PASSWORD: Joi.string().required(),
+  BULLMQ_QUEUE_NAME: Joi.string().required(),
 });
