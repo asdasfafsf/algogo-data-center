@@ -56,11 +56,14 @@ model BatchInstance {
 }
 
 model JobDefinition {
-  no          Int      @id @default(autoincrement()) @map("JOB_DEFINITION_NO")
-  name        String   @map("JOB_DEFINITION_NAME")
-  description String   @map("JOB_DEFINITION_DESCRIPTION") @db.Text()
-  createdAt   DateTime @default(now()) @map("JOB_DEFINITION_CREATED_AT")
-  updatedAt   DateTime @updatedAt @map("JOB_DEFINITION_UPDATED_AT")
+  no          Int       @id @default(autoincrement()) @map("JOB_DEFINITION_NO")
+  name        String    @unique @map("JOB_DEFINITION_NAME")
+  description String    @map("JOB_DEFINITION_DESCRIPTION") @db.Text()
+  createdAt   DateTime  @default(now()) @map("JOB_DEFINITION_CREATED_AT")
+  updatedAt   DateTime  @updatedAt @map("JOB_DEFINITION_UPDATED_AT")
+  stepList    JobStep[]
+
+  @@index([name])
 }
 
 model JobStep {
@@ -70,6 +73,11 @@ model JobStep {
   description String   @map("JOB_STEP_DESCRIPTION") @db.Text()
   createdAt   DateTime @default(now()) @map("JOB_STEP_CREATED_AT")
   updatedAt   DateTime @updatedAt @map("JOB_STEP_UPDATED_AT")
+
+  jobDefinitionNo Int           @map("JOB_DEFINITION_NO")
+  jobDefinition   JobDefinition @relation(fields: [jobDefinitionNo], references: [no])
+
+  @@index([jobDefinitionNo, order])
 }
 
 model JobInstance {
@@ -89,8 +97,8 @@ model JobInstance {
   errorCode       String?  @map("JOB_ERROR_CODE")
   errorMessage    String?  @map("JOB_ERROR_MESSAGE")
 
-  @@unique([uuid, name])
-  @@index([uuid, name])
+  @@unique([uuid])
+  @@index([uuid])
   @@index([batchInstanceNo])
   @@index([startedAt])
   @@index([finishedAt])
