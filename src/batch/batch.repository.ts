@@ -12,23 +12,12 @@ export class BatchRepository {
         name: batchDefinition.name,
         cron: batchDefinition.cron,
         description: batchDefinition.description,
-        stepList: {
-          create: batchDefinition.stepList,
-        },
       },
     });
   }
 
   async findAllBatchDefinition() {
-    return await this.prisma.batchDefinition.findMany({
-      include: {
-        stepList: {
-          orderBy: {
-            order: 'asc',
-          },
-        },
-      },
-    });
+    return await this.prisma.batchDefinition.findMany();
   }
 
   async createBatchInstance(batchInstance: CreateBatchInstanceDto) {
