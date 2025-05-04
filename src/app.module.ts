@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NemoModule } from './nemo/nemo.module';
-import { ConfigModule, ConfigType } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { validationSchema } from './config/validationSchema';
 import { NemoConfig } from './config/NemoConfig';
 import { PrismaModule } from './prisma/prisma.module';
