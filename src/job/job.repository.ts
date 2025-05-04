@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpsertJobInstanceDto } from './dto/upsert-job-instance.dto';
-
+import { CreateJobDefinitionDto } from './dto/create-job-definition.dto';
 @Injectable()
 export class JobRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -39,5 +39,44 @@ export class JobRepository {
     });
 
     return jobInstance;
+  }
+
+  async createJobDefinition(data: CreateJobDefinitionDto) {
+    const jobDefinition = await this.prisma.jobDefinition.create({
+      data: {
+        name: data.name,
+        description: data.description,
+        stepList: {
+          create: data.stepList.map((step) => ({
+            step: step.name,
+            order: step.order,
+            name: step.name,
+            description: step.description,
+          })),
+        },
+      },
+    });
+
+    return jobDefinition;
+  }
+
+  async deleteJobDefinition(no: number) {
+    await this.prisma.jobDefinition.delete({
+      where: {
+        no,
+      },
+    });
+  }
+
+  async findAllJobDefinition() {
+    return this.prisma.jobDefinition.findMany();
+  }
+
+  async findJobDefinitionByNo(no: number) {
+    return this.prisma.jobDefinition.findUnique({
+      where: {
+        no,
+      },
+    });
   }
 }
