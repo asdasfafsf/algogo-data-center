@@ -68,7 +68,6 @@ export class JobRepository {
         description: data.description,
         stepList: {
           create: data.stepList.map((step) => ({
-            step: step.name,
             order: step.order,
             name: step.name,
             description: step.description,
