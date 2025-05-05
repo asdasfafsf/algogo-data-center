@@ -4,19 +4,19 @@ import { Cache } from 'cache-manager';
 import { OrchestratorRepository } from './orchestrator.repository';
 import { uuidv7 } from 'uuidv7';
 import { FlowProducer } from 'bullmq';
-import { InjectFlowProducer } from '@nestjs/bullmq';
 import { BullMQConfig } from '../config/BullMQConfig';
 import { ConfigType } from '@nestjs/config';
+import { ORCHESTRATOR_FLOW_PRODUCER } from './constants/injection';
 
 @Injectable()
 export class OrchestratorService {
   constructor(
     private readonly orchestratorRepository: OrchestratorRepository,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    @InjectFlowProducer(process.env.BULLMQ_QUEUE_NAME)
-    private flowProducer: FlowProducer,
     @Inject(BullMQConfig.KEY)
     private bullmqConfig: ConfigType<typeof BullMQConfig>,
+    @Inject(ORCHESTRATOR_FLOW_PRODUCER)
+    private flowProducer: FlowProducer,
   ) {}
 
   async getJobDefinition(name: string) {
