@@ -1,7 +1,5 @@
 import { Module, OnModuleInit } from '@nestjs/common';
-import { JobRegistry } from '../job/job-registry';
 import { DiscoveryModule } from '@nestjs/core';
-import { DispatcherService } from '../job/dispatcher.service';
 import { BatchService } from './batch.service';
 import { BatchRepository } from './batch.repository';
 import { PrismaModule } from '../prisma/prisma.module';
@@ -17,14 +15,12 @@ import { BatchPlanService } from './batch.plan.service';
     OrchestratorModule,
   ],
   providers: [
-    JobRegistry,
-    DispatcherService,
     BatchService,
     BatchRepository,
     BatchPlanRegistry,
     BatchPlanService,
   ],
-  exports: [DispatcherService, JobRegistry],
+  exports: [],
 })
 export class BatchModule implements OnModuleInit {
   constructor(private readonly batchService: BatchService) {}
