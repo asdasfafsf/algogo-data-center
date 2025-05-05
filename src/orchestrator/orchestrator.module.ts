@@ -7,6 +7,7 @@ import { BullMQConfig } from 'src/config/BullMQConfig';
 import { ConfigType } from '@nestjs/config';
 import { FlowProducer } from 'bullmq';
 import { ORCHESTRATOR_FLOW_PRODUCER } from './constants/injection';
+import { OrchestratorController } from './orchestrator.controller';
 
 @Module({
   imports: [PrismaModule, DiscoveryModule],
@@ -21,5 +22,6 @@ import { ORCHESTRATOR_FLOW_PRODUCER } from './constants/injection';
     OrchestratorRepository,
   ],
   exports: [OrchestratorService],
+  controllers: [OrchestratorController],
 })
 export class OrchestratorModule {}

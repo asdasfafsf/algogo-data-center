@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { NemoModule } from './nemo/nemo.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigType } from '@nestjs/config';
 import { validationSchema } from './config/validationSchema';
 import { NemoConfig } from './config/NemoConfig';
 import { PrismaModule } from './prisma/prisma.module';
@@ -16,6 +16,8 @@ import { BullMQConfig } from './config/BullMQConfig';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
 import { ProblemModule } from './problem/problem.module';
+import { BullModule } from '@nestjs/bullmq';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,14 +29,20 @@ import { ProblemModule } from './problem/problem.module';
     CacheModule.register({
       isGlobal: true,
     }),
+    BullModule.forRootAsync({
+      useFactory: (bullmqConfig: ConfigType<typeof BullMQConfig>) => ({
+        connection: bullmqConfig,
+      }),
+      inject: [BullMQConfig.KEY],
+    }),
     DiscoveryModule,
     NemoModule,
     PrismaModule,
     BatchModule,
     WorkerModule,
-    OrchestratorModule,
     JobModule,
     ProblemModule,
+    OrchestratorModule,
   ],
   controllers: [AppController],
   providers: [

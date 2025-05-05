@@ -18,7 +18,6 @@ export class ProblemBojCollectJob
 
   async run(data: ProblemCollectRequest) {
     const { source, sourceId } = data;
-
     const nemoResponse = await this.nemoService.execute<
       AcmicpcRequest,
       AcmicpcResponse

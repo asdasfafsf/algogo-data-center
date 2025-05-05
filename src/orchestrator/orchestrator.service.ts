@@ -62,6 +62,7 @@ export class OrchestratorService {
         opts: {
           removeOnComplete: true,
           removeOnFail: true,
+          failParentOnFailure: true,
         },
       };
     }
