@@ -43,6 +43,26 @@ export class JobRepository {
 
   async createJobDefinition(data: CreateJobDefinitionDto) {
     const jobDefinition = await this.prisma.jobDefinition.create({
+      select: {
+        no: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        stepList: {
+          select: {
+            no: true,
+            order: true,
+            name: true,
+            description: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
       data: {
         name: data.name,
         description: data.description,

@@ -1,16 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { JobRepository } from './job.repository';
 import { CreateJobDefinitionDto } from './dto/create-job-definition.dto';
+import { JobDefinitionDto } from './dto/job-definition.dto';
 
 @Injectable()
 export class JobService {
   constructor(private readonly jobRepository: JobRepository) {}
 
-  async createJobDefinition(dto: CreateJobDefinitionDto) {
-    return this.jobRepository.createJobDefinition(dto);
+  async createJobDefinition(
+    dto: CreateJobDefinitionDto,
+  ): Promise<JobDefinitionDto> {
+    const jobDefinition = await this.jobRepository.createJobDefinition(dto);
+    return jobDefinition;
   }
 
-  async deleteJobDefinition(jobNo: number) {
+  async deleteJobDefinition(jobNo: number): Promise<void> {
     return this.jobRepository.deleteJobDefinition(jobNo);
   }
 
