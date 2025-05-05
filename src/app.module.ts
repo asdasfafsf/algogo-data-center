@@ -15,6 +15,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { BullMQConfig } from './config/BullMQConfig';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ApiResponseInterceptor } from './common/interceptors/api-response.interceptor';
+import { ProblemModule } from './problem/problem.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -33,6 +34,7 @@ import { ApiResponseInterceptor } from './common/interceptors/api-response.inter
     WorkerModule,
     OrchestratorModule,
     JobModule,
+    ProblemModule,
   ],
   controllers: [AppController],
   providers: [

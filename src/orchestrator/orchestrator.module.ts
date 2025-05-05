@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { OrchestratorService } from './orchestrator.service';
 import { DiscoveryModule } from '@nestjs/core';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaModule } from '../prisma/prisma.module';
 import { OrchestratorRepository } from './orchestrator.repository';
 import { BullModule } from '@nestjs/bullmq';
-import { BullMQConfig } from 'src/config/BullMQConfig';
+import { BullMQConfig } from '../config/BullMQConfig';
 import { ConfigType } from '@nestjs/config';
 @Module({
   providers: [OrchestratorService, OrchestratorRepository],
