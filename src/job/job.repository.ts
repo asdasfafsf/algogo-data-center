@@ -89,11 +89,52 @@ export class JobRepository {
   }
 
   async findAllJobDefinition() {
-    return this.prisma.jobDefinition.findMany();
+    return this.prisma.jobDefinition.findMany({
+      select: {
+        no: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        stepList: {
+          select: {
+            no: true,
+            order: true,
+            name: true,
+            description: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    });
   }
 
   async findJobDefinitionByNo(no: number) {
     return this.prisma.jobDefinition.findUnique({
+      select: {
+        no: true,
+        name: true,
+        description: true,
+        createdAt: true,
+        updatedAt: true,
+        stepList: {
+          select: {
+            no: true,
+            order: true,
+            name: true,
+            description: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
       where: {
         no,
       },

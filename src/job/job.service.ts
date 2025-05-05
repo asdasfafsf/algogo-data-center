@@ -18,7 +18,7 @@ export class JobService {
     return this.jobRepository.deleteJobDefinition(jobNo);
   }
 
-  async getJobDefinitions() {
+  async getJobDefinitions(): Promise<JobDefinitionDto[]> {
     const jobDefinitions = await this.jobRepository.findAllJobDefinition();
 
     if (!jobDefinitions.length) {
@@ -28,7 +28,7 @@ export class JobService {
     return jobDefinitions;
   }
 
-  async getJobDefinitionByNo(jobNo: number) {
+  async getJobDefinitionByNo(jobNo: number): Promise<JobDefinitionDto> {
     const jobDefinition = await this.jobRepository.findJobDefinitionByNo(jobNo);
 
     if (!jobDefinition) {
