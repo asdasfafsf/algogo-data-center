@@ -14,7 +14,7 @@ describe('OrchestratorService', () => {
     flowProducer = { add: jest.fn() };
     config = { queueName: 'test-queue' };
 
-    service = new OrchestratorService(repo, cache, flowProducer, config);
+    service = new OrchestratorService(repo, cache, config, flowProducer);
   });
 
   describe('getJobDefinition', () => {

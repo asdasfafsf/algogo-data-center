@@ -1,9 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Job } from 'bullmq';
+import { DispatcherService } from '../job/dispatcher.service';
 import { JobHandlerKey } from '../job/types/job.type';
 
 @Injectable()
-export class WorkerService {
-  constructor() {}
-
-  async dispatch(key: JobHandlerKey, data: any) {}
+@Processor(process.env.BULLMQ_QUEUE_NAME || 'job')
+export class WorkerService extends WorkerHost {
+  private readonly logger = new Logger(WorkerService.name);
+  constructor(private readonly dispatcherService: DispatcherService) {
+    super();
+  }
+  async process(job: Job): Promise<any> {
+    this.logger.log(`Processing job ${job.id}`);
+    const result = await this.dispatcherService.dispatch(
+      job.name as JobHandlerKey,
+      job.data,
+    );
+    this.logger.log(`Processed job ${job.id}`);
+    return result;
+  }
 }

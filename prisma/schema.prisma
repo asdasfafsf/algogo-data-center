@@ -82,8 +82,8 @@ model JobInstance {
   errorCode       String?   @map("JOB_ERROR_CODE")
   errorMessage    String?   @map("JOB_ERROR_MESSAGE")
 
-  @@unique([uuid])
-  @@index([uuid])
+  @@unique([uuid, name])
+  @@index([uuid, name])
   @@index([batchInstanceNo])
   @@index([startedAt])
   @@index([finishedAt])

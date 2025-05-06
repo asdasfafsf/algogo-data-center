@@ -12,10 +12,12 @@ export class JobRepository {
         uuid: true,
       },
       where: {
-        uuid: data.uuid,
+        uuid_name: {
+          uuid: data.uuid,
+          name: data.name,
+        },
       },
       update: {
-        startedAt: data.startedAt,
         finishedAt: data.finishedAt,
         elapsedTime: data.elapsedTime,
         state: data.state,
@@ -136,6 +138,17 @@ export class JobRepository {
       },
       where: {
         no,
+      },
+    });
+  }
+
+  async findJobInstanceByUuid(uuid: string) {
+    return this.prisma.jobInstance.findMany({
+      where: {
+        uuid,
+      },
+      orderBy: {
+        startedAt: 'asc',
       },
     });
   }

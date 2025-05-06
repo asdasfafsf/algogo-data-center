@@ -1,3 +1,3 @@
-export interface JobRunner {
-  run<T, R>(data: T): Promise<R> | R;
+export interface JobRunner<T, R> {
+  run(data: T): Promise<R> | R;
 }
