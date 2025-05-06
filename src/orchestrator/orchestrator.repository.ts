@@ -25,9 +25,6 @@ export class OrchestratorRepository {
       },
     });
 
-    return {
-      ...jobDefinition,
-      stepList: jobDefinition.stepList.sort((a, b) => a.order - b.order),
-    };
+    return jobDefinition;
   }
 }

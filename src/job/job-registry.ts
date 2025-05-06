@@ -6,7 +6,7 @@ import { JobHandlerKey } from 'src/job/types/job.type';
 
 @Injectable()
 export class JobRegistry implements OnModuleInit {
-  private readonly jobs = new Map<string, JobRunner>();
+  private readonly jobs = new Map<string, JobRunner<any, any>>();
 
   constructor(private readonly discoveryService: DiscoveryService) {}
 
@@ -22,7 +22,10 @@ export class JobRegistry implements OnModuleInit {
           JobHandler,
           wrapper,
         );
-        return { key, instance: wrapper.instance as JobRunner };
+        return {
+          key,
+          instance: wrapper.instance as JobRunner<any, any>,
+        };
       })
       .filter((entry) => entry.key && entry.instance);
 
@@ -31,8 +34,8 @@ export class JobRegistry implements OnModuleInit {
     }
   }
 
-  get(key: JobHandlerKey): JobRunner {
+  get<T, R>(key: JobHandlerKey): JobRunner<T, R> {
     const runner = this.jobs.get(key);
-    return runner;
+    return runner as JobRunner<T, R>;
   }
 }
