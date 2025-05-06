@@ -141,4 +141,15 @@ export class JobRepository {
       },
     });
   }
+
+  async findJobInstanceByUuid(uuid: string) {
+    return this.prisma.jobInstance.findMany({
+      where: {
+        uuid,
+      },
+      orderBy: {
+        startedAt: 'asc',
+      },
+    });
+  }
 }

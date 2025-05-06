@@ -13,13 +13,23 @@ export class DispatcherService {
     private readonly jobRegistry: JobRegistry,
   ) {}
 
+  async getNextData({ uuid }: { key: JobHandlerKey; uuid: string }) {
+    const jobInstances = await this.jobRepository.findJobInstanceByUuid(uuid);
+
+    return jobInstances.at(-1)?.result;
+  }
+
   async dispatch(key: JobHandlerKey, data: any & { uuid: string }) {
-    const startedAt = new Date();
     this.logger.log(`Dispatching job ${key}`);
-    this.logger.log(data);
+
+    const startedAt = new Date();
     const { uuid } = data;
-    const request = { ...data, uuid: undefined };
+    let request = { ...data, uuid: undefined };
+
     try {
+      const nextData = (await this.getNextData({ key, uuid })) ?? data;
+      request = { ...nextData, uuid: undefined };
+
       await this.jobRepository.upsertJobInstance({
         uuid,
         startedAt,
@@ -35,7 +45,7 @@ export class DispatcherService {
         throw new NotFoundException(`Job not found: ${key}`);
       }
 
-      const result = await job.run(data);
+      const result = await job.run(nextData);
       this.logger.log(`Job ${key} finished`, result);
       const finishedAt = new Date();
       const elapsedTime = getElapsedTime(startedAt, finishedAt);
