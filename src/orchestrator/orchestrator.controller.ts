@@ -8,7 +8,7 @@ export class OrchestratorController {
   @Get()
   async test() {
     return await this.orchestratorService.orchestrate('PROBLEM_BOJ', {
-      sourceId: '1000',
+      sourceId: '24952',
       source: 'acmicpc',
     });
   }
