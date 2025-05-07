@@ -37,6 +37,7 @@ describe('OrchestratorService', () => {
       expect(cache.set).toHaveBeenCalledWith(
         'jobDefinition:job2',
         JSON.stringify({ stepList: ['repoStep'] }),
+        60,
       );
     });
 
