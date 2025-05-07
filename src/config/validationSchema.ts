@@ -9,4 +9,10 @@ export const validationSchema = Joi.object({
   BULLMQ_PORT: Joi.number().required(),
   BULLMQ_PASSWORD: Joi.string().required(),
   BULLMQ_QUEUE_NAME: Joi.string().required(),
+
+  S3_SECRET_KEY: Joi.string().required(),
+  S3_ACCESS_KEY: Joi.string().required(),
+  S3_BUCKET_NAME: Joi.string().required(),
+  S3_REGION: Joi.string().required(),
+  S3_ENDPOINT: Joi.string().required(),
 });

@@ -22,6 +22,8 @@ model BatchDefinition {
   updatedAt   DateTime @updatedAt @map("BATCH_DEFINITION_UPDATED_AT")
 
   batchInstanceList BatchInstance[]
+
+  @@map("BATCH_DEFINITION")
 }
 
 model BatchInstance {
@@ -38,6 +40,7 @@ model BatchInstance {
   batchDefinition BatchDefinition @relation(fields: [batchDefinitionNo], references: [no])
 
   @@index([batchDefinitionNo, no])
+  @@map("BATCH_INSTANCE")
 }
 
 model JobDefinition {
@@ -49,6 +52,7 @@ model JobDefinition {
   stepList    JobStep[]
 
   @@index([name])
+  @@map("JOB_DEFINITION")
 }
 
 model JobStep {
@@ -63,6 +67,7 @@ model JobStep {
   jobDefinition   JobDefinition @relation(fields: [jobDefinitionNo], references: [no])
 
   @@index([jobDefinitionNo, order])
+  @@map("JOB_STEP")
 }
 
 model JobInstance {
@@ -87,6 +92,7 @@ model JobInstance {
   @@index([batchInstanceNo])
   @@index([startedAt])
   @@index([finishedAt])
+  @@map("JOB_INSTANCE")
 }
 
 model ProblemV2 {
@@ -124,36 +130,40 @@ model ProblemV2 {
   inputOutputList       ProblemV2InputOutput[]
   typeList              ProblemV2Type[]
 
+  @@unique([source, sourceId])
   @@index([source, sourceId])
   @@index([answerRate])
   @@index([submitCount])
   @@index([level, answerRate])
   @@index([level, submitCount])
+  @@map("PROBLEM_V2")
 }
 
 model ProblemV2Type {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(255)
+  no          Int       @id @default(autoincrement()) @map("PROBLEM_V2_TYPE_NO")
+  name        String    @map("PROBLEM_V2_TYPE_NAME") @db.VarChar(255)
   problem     ProblemV2 @relation(fields: [problemUuid], references: [uuid], onDelete: Cascade)
-  problemUuid String    @db.VarChar(36)
+  problemUuid String    @map("PROBLEM_V2_UUID") @db.VarChar(36)
 
-  @@unique([name])
+  @@unique([problemUuid, name])
   @@index([problemUuid])
+  @@map("PROBLEM_V2_TYPE")
 }
 
 model ProblemV2InputOutput {
-  id        Int      @id @default(autoincrement())
-  order     Int
-  input     String   @db.VarChar(255)
-  output    String   @db.VarChar(255)
-  content   String?  @db.Text()
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  no        Int      @id @default(autoincrement()) @map("PROBLEM_V2_INPUT_OUTPUT_NO")
+  order     Int      @map("PROBLEM_V2_INPUT_OUTPUT_ORDER")
+  input     String   @map("PROBLEM_V2_INPUT_OUTPUT_INPUT") @db.VarChar(255)
+  output    String   @map("PROBLEM_V2_INPUT_OUTPUT_OUTPUT") @db.VarChar(255)
+  content   String?  @map("PROBLEM_V2_INPUT_OUTPUT_CONTENT") @db.Text()
+  createdAt DateTime @default(now()) @map("PROBLEM_V2_INPUT_OUTPUT_CREATED_AT")
+  updatedAt DateTime @updatedAt @map("PROBLEM_V2_INPUT_OUTPUT_UPDATED_AT")
 
-  problemUuid String    @db.VarChar(36)
+  problemUuid String    @map("PROBLEM_V2_UUID") @db.VarChar(36)
   problem     ProblemV2 @relation(fields: [problemUuid], references: [uuid], onDelete: Cascade)
 
   @@index([problemUuid])
+  @@map("PROBLEM_V2_INPUT_OUTPUT")
 }
 
 model User {

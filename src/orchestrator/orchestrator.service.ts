@@ -32,10 +32,14 @@ export class OrchestratorService {
       jobDefinition = await this.orchestratorRepository.findJobDefinition({
         name,
       });
-      await this.cacheManager.set(
-        `jobDefinition:${name}`,
-        JSON.stringify(jobDefinition),
-      );
+
+      if (jobDefinition) {
+        await this.cacheManager.set(
+          `jobDefinition:${name}`,
+          JSON.stringify(jobDefinition),
+          60,
+        );
+      }
     } else {
       jobDefinition = JSON.parse(jobDefinitionStr as string);
     }
