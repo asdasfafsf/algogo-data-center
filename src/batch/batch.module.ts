@@ -6,7 +6,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { OrchestratorModule } from '../orchestrator/orchestrator.module';
 import { BatchPlanRegistry } from './batch-plan.registry';
-import { BatchPlanService } from './batch.plan.service';
+import { BatchPlanService } from './batch-plan.service';
 @Module({
   imports: [
     DiscoveryModule,

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BatchService } from './batch.service';
 import { BatchRepository } from './batch.repository';
-import { BatchPlanService } from './batch.plan.service';
+import { BatchPlanService } from './batch-plan.service';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { OrchestratorService } from '../orchestrator/orchestrator.service';
 import { CreateBatchDefinitionDto } from './dto/create-batch-definition.dto';

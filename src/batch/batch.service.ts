@@ -4,7 +4,7 @@ import { CreateBatchDefinitionDto } from './dto/create-batch-definition.dto';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { BatchDefinitionDto } from './dto/batch-definition.dto';
-import { BatchPlanService } from './batch.plan.service';
+import { BatchPlanService } from './batch-plan.service';
 import { OrchestratorService } from '../orchestrator/orchestrator.service';
 import { getElapsedTime } from '../common/date';
 
