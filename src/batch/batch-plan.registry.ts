@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { DiscoveryService } from '@nestjs/core';
 import { BatchPlanner } from './decorators/batch-planner.decorator';
-import { BatchPlan } from './interface/batch-plan.interface';
+import { BatchPlan } from './interfaces/batch-plan.interface';
 @Injectable()
 export class BatchPlanRegistry implements OnModuleInit {
   private readonly batchPlans = new Map<string, BatchPlan>();
