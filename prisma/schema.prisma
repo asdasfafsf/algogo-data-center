@@ -36,6 +36,8 @@ model BatchInstance {
   finishedAt        DateTime? @map("BATCH_INSTANCE_FINISHED_AT")
   elapsedTime       Int?      @map("BATCH_INSTANCE_ELAPSED_TIME")
   data              Json?     @map("BATCH_INSTANCE_DATA")
+  errorCode         String?   @map("BATCH_INSTANCE_ERROR_CODE")
+  errorMessage      String?   @map("BATCH_INSTANCE_ERROR_MESSAGE")
 
   batchDefinition BatchDefinition @relation(fields: [batchDefinitionNo], references: [no])
 
