@@ -5,6 +5,8 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { BatchDefinitionDto } from './dto/batch-definition.dto';
 import { BatchPlanService } from './batch.plan.service';
+import { OrchestratorService } from '../orchestrator/orchestrator.service';
+import { getElapsedTime } from '../common/date';
 
 @Injectable()
 export class BatchService {
@@ -12,6 +14,7 @@ export class BatchService {
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly batchPlanService: BatchPlanService,
     private readonly batchRepository: BatchRepository,
+    private readonly orchestratorService: OrchestratorService,
   ) {}
 
   async saveBatchDefinition(batchDefinition: CreateBatchDefinitionDto) {
@@ -41,7 +44,42 @@ export class BatchService {
     this.schedulerRegistry.addCronJob(
       batchDefinition.name,
       new CronJob(batchDefinition.cron, async () => {
-        await this.batchPlanService.plan(batchDefinition);
+        const batchPlanList = await this.batchPlanService.plan(batchDefinition);
+
+        for (const batchPlan of batchPlanList) {
+          const startedAt = new Date();
+          this.orchestratorService
+            .orchestrate(batchPlan.name, batchPlan)
+            .then(async (result) => {
+              const finishedAt = new Date();
+              const elapsedTime = getElapsedTime(startedAt, finishedAt);
+
+              await this.batchRepository.updateBatchInstance({
+                no: batchPlan.no,
+                state: result.state,
+                startedAt,
+                finishedAt,
+                elapsedTime,
+                errorCode: result.errorCode,
+                errorMessage: result.errorMessage,
+              });
+            })
+            .catch(async (error) => {
+              const finishedAt = new Date();
+              const elapsedTime = getElapsedTime(startedAt, finishedAt);
+              console.error(error);
+
+              await this.batchRepository.updateBatchInstance({
+                no: batchPlan.no,
+                state: 'FAILED',
+                startedAt,
+                finishedAt,
+                elapsedTime,
+                errorCode: error.code,
+                errorMessage: error.message,
+              });
+            });
+        }
       }),
     );
   }
