@@ -3,7 +3,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { OrchestratorRepository } from './orchestrator.repository';
 import { uuidv7 } from 'uuidv7';
-import { FlowProducer } from 'bullmq';
+import { FlowProducer, JobNode } from 'bullmq';
 import { BullMQConfig } from '../config/BullMQConfig';
 import { ConfigType } from '@nestjs/config';
 import { ORCHESTRATOR_FLOW_PRODUCER } from './constants/injection';
@@ -74,6 +74,22 @@ export class OrchestratorService {
     return jobOption;
   }
 
+  async toFlatJobNode(jobOption: JobNode) {
+    const jobNodes = [];
+    const stack = [jobOption];
+
+    while (stack.length) {
+      const jobNode = stack.pop();
+      jobNodes.push(jobNode);
+
+      if (jobNode.children) {
+        stack.push(...jobNode.children);
+      }
+    }
+
+    return jobNodes;
+  }
+
   async orchestrate(name: string, data: any) {
     const jobDefinition = await this.getJobDefinition(name);
     const uuid = uuidv7();
@@ -85,6 +101,26 @@ export class OrchestratorService {
     };
 
     const jobOption = await this.generateJob(stepList, newData);
-    await this.flowProducer.add(jobOption);
+    const jobs = await this.flowProducer.add(jobOption);
+    const flatJobNodes = await this.toFlatJobNode(jobs);
+
+    const settled = await Promise.allSettled(
+      flatJobNodes.map((jobNode) => jobNode.waitUntilFinished()),
+    );
+
+    const rejectedJob = settled.find((elem) => elem.status === 'rejected');
+
+    if (rejectedJob) {
+      return {
+        state: 'FAILED',
+        errorCode: rejectedJob.reason?.code,
+        errorMessage: rejectedJob.reason?.message,
+      };
+    }
+
+    return {
+      state: 'SUCCESS',
+      data: newData,
+    };
   }
 }
