@@ -14,13 +14,13 @@ datasource db {
 }
 
 model BatchDefinition {
-  no          Int      @id @default(autoincrement()) @map("BATCH_DEFINITION_NO")
-  name        String   @map("BATCH_DEFINITION_NAME")
-  cron        String   @map("BATCH_DEFINITION_CRON")
-  description String   @map("BATCH_DEFINITION_DESCRIPTION") @db.Text()
-  createdAt   DateTime @default(now()) @map("BATCH_DEFINITION_CREATED_AT")
-  updatedAt   DateTime @updatedAt @map("BATCH_DEFINITION_UPDATED_AT")
-
+  no                Int             @id @default(autoincrement()) @map("BATCH_DEFINITION_NO")
+  name              String          @map("BATCH_DEFINITION_NAME")
+  cron              String          @map("BATCH_DEFINITION_CRON")
+  description       String          @map("BATCH_DEFINITION_DESCRIPTION") @db.Text()
+  createdAt         DateTime        @default(now()) @map("BATCH_DEFINITION_CREATED_AT")
+  updatedAt         DateTime        @updatedAt @map("BATCH_DEFINITION_UPDATED_AT")
+  deletedAt         DateTime?       @map("BATCH_DEFINITION_DELETED_AT")
   batchInstanceList BatchInstance[]
 
   @@map("BATCH_DEFINITION")
