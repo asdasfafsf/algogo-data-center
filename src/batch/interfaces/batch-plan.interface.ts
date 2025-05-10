@@ -1,6 +1,6 @@
 import { BatchDefinitionDto } from '../dto/batch-definition.dto';
-import { BatchInstance } from '../types/batch-instance.type';
+import { CreateBatchInstanceDto } from '../dto/create-batch-instance.dto';
 
 export interface BatchPlan {
-  plan(batchDefinition: BatchDefinitionDto): Promise<BatchInstance<any>[]>;
+  plan(batchDefinition: BatchDefinitionDto): Promise<CreateBatchInstanceDto[]>;
 }

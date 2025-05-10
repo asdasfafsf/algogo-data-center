@@ -25,7 +25,6 @@ export class BatchRepository {
     return await this.prisma.batchInstance.create({
       data: {
         batchDefinitionNo: batchInstance.batchDefinitionNo,
-        updatedAt: new Date(),
         state: batchInstance.state,
         data: batchInstance.data,
       },
