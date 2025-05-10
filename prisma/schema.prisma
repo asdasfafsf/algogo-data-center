@@ -98,7 +98,8 @@ model JobInstance {
 }
 
 model ProblemV2 {
-  uuid              String  @id @default(uuid()) @map("PROBLEM_V2_UUID") @db.VarChar(36)
+  no                Int     @id @default(autoincrement()) @map("PROBLEM_V2_NO")
+  uuid              String  @unique @default(uuid()) @map("PROBLEM_V2_UUID") @db.VarChar(36)
   title             String  @map("PROBLEM_V2_TITLE")
   level             Int     @map("PROBLEM_V2_LEVEL")
   levelText         String  @map("PROBLEM_V2_LEVEL_TEXT")
