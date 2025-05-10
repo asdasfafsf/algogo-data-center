@@ -41,6 +41,7 @@ describe('BatchPlanService', () => {
     it('배치 정의에 맞는 계획을 수립하고 배치 인스턴스 목록을 반환해야 함', async () => {
       // Given
       const batchDefinition: BatchDefinitionDto = {
+        no: 1,
         name: 'testBatch',
         cron: '0 0 * * *',
         description: '테스트 배치',
@@ -78,6 +79,7 @@ describe('BatchPlanService', () => {
     it('배치 계획이 레지스트리에 존재하지 않으면 빈 배열을 반환해야 함', async () => {
       // Given
       const batchDefinition: BatchDefinitionDto = {
+        no: 1,
         name: 'nonExistentBatch',
         cron: '0 0 * * *',
         description: '존재하지 않는 배치',
@@ -99,6 +101,7 @@ describe('BatchPlanService', () => {
     it('계획 수립 중 오류가 발생하면 빈 배열을 반환해야 함', async () => {
       // Given
       const batchDefinition: BatchDefinitionDto = {
+        no: 1,
         name: 'errorBatch',
         cron: '0 0 * * *',
         description: '오류 발생 배치',
@@ -125,6 +128,7 @@ describe('BatchPlanService', () => {
     it('배치 인스턴스 생성 중 오류가 발생하면 빈 배열을 반환해야 함', async () => {
       // Given
       const batchDefinition: BatchDefinitionDto = {
+        no: 1,
         name: 'instanceErrorBatch',
         cron: '0 0 * * *',
         description: '인스턴스 생성 오류 배치',

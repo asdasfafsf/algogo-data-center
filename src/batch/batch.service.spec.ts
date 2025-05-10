@@ -146,6 +146,7 @@ describe('BatchService', () => {
     it('배치 정의에 따라 크론 작업을 스케줄러에 추가해야 함', async () => {
       // Given
       const batchDefinition: BatchDefinitionDto = {
+        no: 1,
         name: 'testBatch',
         cron: '0 0 * * *',
         description: '테스트 배치',
@@ -172,6 +173,7 @@ describe('BatchService', () => {
     it('크론 작업 실행 시 배치 계획을 수립하고 실행해야 함', async () => {
       // Given
       const batchDefinition: BatchDefinitionDto = {
+        no: 1,
         name: 'testBatch',
         cron: '0 0 * * *',
         description: '테스트 배치',
