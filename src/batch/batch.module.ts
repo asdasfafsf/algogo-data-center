@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { OrchestratorModule } from '../orchestrator/orchestrator.module';
 import { BatchPlanRegistry } from './batch-plan.registry';
 import { BatchPlanService } from './batch-plan.service';
+import { BatchController } from './batch.controller';
 @Module({
   imports: [
     DiscoveryModule,
@@ -21,6 +22,7 @@ import { BatchPlanService } from './batch-plan.service';
     BatchPlanService,
   ],
   exports: [],
+  controllers: [BatchController],
 })
 export class BatchModule implements OnModuleInit {
   constructor(private readonly batchService: BatchService) {}

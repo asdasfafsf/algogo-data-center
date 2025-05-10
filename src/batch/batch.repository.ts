@@ -18,7 +18,11 @@ export class BatchRepository {
   }
 
   async findAllBatchDefinition() {
-    return await this.prisma.batchDefinition.findMany();
+    return await this.prisma.batchDefinition.findMany({
+      where: {
+        deletedAt: null,
+      },
+    });
   }
 
   async createBatchInstance(batchInstance: CreateBatchInstanceDto) {
@@ -43,6 +47,15 @@ export class BatchRepository {
         elapsedTime: batchInstance.elapsedTime,
         errorCode: batchInstance.errorCode,
         errorMessage: batchInstance.errorMessage,
+      },
+    });
+  }
+
+  async deleteBatchDefinition(no: number) {
+    await this.prisma.batchDefinition.update({
+      where: { no },
+      data: {
+        deletedAt: new Date(),
       },
     });
   }

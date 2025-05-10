@@ -25,7 +25,12 @@ describe('BatchService', () => {
         {
           provide: SchedulerRegistry,
           useValue: {
-            getCronJobs: jest.fn(),
+            getCronJobs: jest.fn().mockReturnValue(
+              new Map([
+                ['job1', {}],
+                ['job2', {}],
+              ]),
+            ),
             deleteCronJob: jest.fn(),
             addCronJob: jest.fn(),
           },
@@ -42,6 +47,7 @@ describe('BatchService', () => {
             saveBatchDefinition: jest.fn(),
             findAllBatchDefinition: jest.fn(),
             updateBatchInstance: jest.fn(),
+            deleteBatchDefinition: jest.fn(),
           },
         },
         {
@@ -80,6 +86,11 @@ describe('BatchService', () => {
         description: '테스트 배치',
       };
 
+      // synchronizeBatchDefinition 모킹
+      jest
+        .spyOn(service, 'synchronizeBatchDefinition')
+        .mockResolvedValue(undefined);
+
       // When
       await service.saveBatchDefinition(batchDefinition);
 
@@ -87,6 +98,51 @@ describe('BatchService', () => {
       expect(batchRepository.saveBatchDefinition).toHaveBeenCalledWith(
         batchDefinition,
       );
+      expect(service.synchronizeBatchDefinition).toHaveBeenCalled();
+    });
+
+    it('배치 정의 저장 후 동기화를 수행해야 함', async () => {
+      // Given
+      const batchDefinition: CreateBatchDefinitionDto = {
+        name: 'testBatch',
+        cron: '0 0 * * *',
+        description: '테스트 배치',
+      };
+
+      // synchronizeBatchDefinition 모킹
+      jest
+        .spyOn(service, 'synchronizeBatchDefinition')
+        .mockResolvedValue(undefined);
+
+      // When
+      await service.saveBatchDefinition(batchDefinition);
+
+      // Then
+      expect(batchRepository.saveBatchDefinition).toHaveBeenCalledWith(
+        batchDefinition,
+      );
+      expect(service.synchronizeBatchDefinition).toHaveBeenCalled();
+    });
+
+    it('저장 실패 시 동기화를 수행하지 않아야 함', async () => {
+      // Given
+      const batchDefinition: CreateBatchDefinitionDto = {
+        name: 'testBatch',
+        cron: '0 0 * * *',
+        description: '테스트 배치',
+      };
+
+      const error = new Error('저장 실패');
+      (batchRepository.saveBatchDefinition as jest.Mock).mockRejectedValue(
+        error,
+      );
+      jest.spyOn(service, 'synchronizeBatchDefinition');
+
+      // When & Then
+      await expect(
+        service.saveBatchDefinition(batchDefinition),
+      ).rejects.toThrow(error);
+      expect(service.synchronizeBatchDefinition).not.toHaveBeenCalled();
     });
   });
 
@@ -220,12 +276,62 @@ describe('BatchService', () => {
       expect(service.executeBatch).toHaveBeenCalledWith(batchPlans[0]);
       expect(service.executeBatch).toHaveBeenCalledWith(batchPlans[1]);
     });
+
+    it('CronJob 생성 실패 시 에러를 전파해야 함', async () => {
+      // Given
+      const batchDefinition: BatchDefinitionDto = {
+        no: 1,
+        name: 'testBatch',
+        cron: '0 0 * * *',
+        description: '테스트 배치',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const error = new Error('CronJob 생성 실패');
+      (CronJob as jest.MockedClass<typeof CronJob>).mockImplementation(() => {
+        throw error;
+      });
+
+      // When & Then
+      await expect(service.addSchedule(batchDefinition)).rejects.toThrow(error);
+      expect(schedulerRegistry.addCronJob).not.toHaveBeenCalled();
+    });
+
+    it('schedulerRegistry.addCronJob 실패 시 에러를 전파해야 함', async () => {
+      // Given
+      const batchDefinition: BatchDefinitionDto = {
+        no: 1,
+        name: 'testBatch',
+        cron: '0 0 * * *',
+        description: '테스트 배치',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const error = new Error('CronJob 생성 실패');
+      (schedulerRegistry.addCronJob as jest.Mock).mockImplementation(() => {
+        throw error;
+      });
+
+      // When & Then
+      await expect(service.addSchedule(batchDefinition)).rejects.toThrow(
+        'CronJob 생성 실패',
+      );
+    });
   });
 
   describe('executeBatch', () => {
     it('성공적인 배치 실행 결과를 처리해야 함', async () => {
       // Given
-      const batchPlan = { name: 'testBatch', no: 1 };
+      const batchPlan: BatchDefinitionDto = {
+        name: 'testBatch',
+        no: 1,
+        description: '',
+        cron: '',
+        createdAt: undefined,
+        updatedAt: undefined,
+      };
       const successResult = { state: 'SUCCESS', data: { result: 'ok' } };
 
       // orchestratorService.orchestrate가 Promise를 반환하도록 설정
@@ -268,7 +374,14 @@ describe('BatchService', () => {
 
     it('실패한 배치 실행 결과를 처리해야 함', async () => {
       // Given
-      const batchPlan = { name: 'testBatch', no: 1 };
+      const batchPlan: BatchDefinitionDto = {
+        name: 'testBatch',
+        no: 1,
+        description: '',
+        cron: '',
+        createdAt: undefined,
+        updatedAt: undefined,
+      };
       const failedResult = {
         state: 'FAILED',
         errorCode: 'ERR_TEST',
@@ -305,7 +418,14 @@ describe('BatchService', () => {
 
     it('배치 실행 중 예외가 발생하면 실패 상태로 처리해야 함', async () => {
       // Given
-      const batchPlan = { name: 'testBatch', no: 1 };
+      const batchPlan: BatchDefinitionDto = {
+        name: 'testBatch',
+        no: 1,
+        description: '',
+        cron: '',
+        createdAt: undefined,
+        updatedAt: undefined,
+      };
       const error = new Error('예상치 못한 오류');
       Object.defineProperty(error, 'code', { value: 'ERR_UNEXPECTED' });
 
@@ -339,6 +459,37 @@ describe('BatchService', () => {
           errorMessage: '예상치 못한 오류',
         }),
       );
+    });
+  });
+
+  describe('deleteBatchDefinition', () => {
+    it('배치 정의 삭제 후 동기화를 수행해야 함', async () => {
+      // Given
+      const no = 1;
+      jest
+        .spyOn(service, 'synchronizeBatchDefinition')
+        .mockResolvedValue(undefined);
+
+      // When
+      await service.deleteBatchDefinition(no);
+
+      // Then
+      expect(batchRepository.deleteBatchDefinition).toHaveBeenCalledWith(no);
+      expect(service.synchronizeBatchDefinition).toHaveBeenCalled();
+    });
+
+    it('삭제 실패 시 동기화를 수행하지 않아야 함', async () => {
+      // Given
+      const no = 1;
+      const error = new Error('삭제 실패');
+      (batchRepository.deleteBatchDefinition as jest.Mock).mockRejectedValue(
+        error,
+      );
+      jest.spyOn(service, 'synchronizeBatchDefinition');
+
+      // When & Then
+      await expect(service.deleteBatchDefinition(no)).rejects.toThrow(error);
+      expect(service.synchronizeBatchDefinition).not.toHaveBeenCalled();
     });
   });
 });

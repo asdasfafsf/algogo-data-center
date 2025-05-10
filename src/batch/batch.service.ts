@@ -19,6 +19,12 @@ export class BatchService {
 
   async saveBatchDefinition(batchDefinition: CreateBatchDefinitionDto) {
     await this.batchRepository.saveBatchDefinition(batchDefinition);
+    await this.synchronizeBatchDefinition();
+  }
+
+  async deleteBatchDefinition(no: number) {
+    await this.batchRepository.deleteBatchDefinition(no);
+    await this.synchronizeBatchDefinition();
   }
 
   async findAllBatchDefinition() {
@@ -53,7 +59,7 @@ export class BatchService {
     );
   }
 
-  async executeBatch(batchPlan: any) {
+  async executeBatch(batchPlan: BatchDefinitionDto) {
     const startedAt = new Date();
     this.orchestratorService
       .orchestrate(batchPlan.name, batchPlan)
