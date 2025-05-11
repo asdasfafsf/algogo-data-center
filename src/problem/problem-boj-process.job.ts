@@ -5,6 +5,7 @@ import { PROBLEM_BOJ_PROCESS } from '../job/constants/job.constants';
 import { AcmicpcResponse } from './types/acmicpc.type';
 import { S3Service } from '../s3/s3.service';
 import { parse } from 'node-html-parser';
+import * as path from 'path';
 
 @Injectable()
 @JobHandler(PROBLEM_BOJ_PROCESS)
@@ -70,9 +71,10 @@ export class ProblemBojProcessJob
       const src = image.getAttribute('src');
       if (src) {
         const imageBuffer = await this.downloadImage(src);
+        const extName = path.extname(src) ?? '.png';
         const newSrc = await this.s3Service.uploadFile(
           imageBuffer,
-          `${fileName}_${++count}.png`,
+          `${fileName}_${++count}${extName}`,
         );
         image.setAttribute('src', newSrc.url);
       }
