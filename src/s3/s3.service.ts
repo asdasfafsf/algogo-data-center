@@ -14,6 +14,7 @@ export class S3Service implements OnModuleInit {
 
   onModuleInit() {
     this.s3 = new S3({
+      endpoint: this.s3Config.endpoint,
       region: this.s3Config.region,
       forcePathStyle: true,
       credentials: {
@@ -30,6 +31,7 @@ export class S3Service implements OnModuleInit {
         Key: key,
         Body: file,
         ContentType: contentType,
+        ACL: 'public-read',
       }),
     );
 
