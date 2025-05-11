@@ -55,7 +55,7 @@ describe('ProblemBojPlan', () => {
           batchDefinitionNo: mockBatchDefinition.no,
           state: 'PENDING',
           data: {
-            source: 'BOJ',
+            source: 'acmicpc',
             sourceId: '1001',
           },
         },
@@ -78,7 +78,7 @@ describe('ProblemBojPlan', () => {
           batchDefinitionNo: mockBatchDefinition.no,
           state: 'PENDING',
           data: {
-            source: 'BOJ',
+            source: 'acmicpc',
             sourceId: '1001',
           },
         },
