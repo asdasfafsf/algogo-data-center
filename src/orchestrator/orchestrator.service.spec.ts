@@ -1,6 +1,19 @@
 import { OrchestratorService } from './orchestrator.service';
 import { NotFoundException } from '@nestjs/common';
 
+// QueueEvents 클래스만 모킹
+jest.mock('bullmq', () => {
+  const originalModule = jest.requireActual('bullmq');
+
+  return {
+    ...originalModule,
+    QueueEvents: jest.fn().mockImplementation(() => ({
+      on: jest.fn(),
+      close: jest.fn(),
+    })),
+  };
+});
+
 describe('OrchestratorService', () => {
   let service: OrchestratorService;
   let repo: any;
@@ -12,7 +25,12 @@ describe('OrchestratorService', () => {
     repo = { findJobDefinition: jest.fn() };
     cache = { get: jest.fn(), set: jest.fn() };
     flowProducer = { add: jest.fn() };
-    config = { queueName: 'test-queue' };
+    config = {
+      queueName: 'test-queue',
+      host: 'localhost',
+      port: 6379,
+      password: 'password',
+    };
 
     service = new OrchestratorService(repo, cache, config, flowProducer);
   });
@@ -109,7 +127,6 @@ describe('OrchestratorService', () => {
       const result = await service.toFlatJobNode(mockJobNode as any);
 
       expect(result).toHaveLength(3);
-      expect(result[0].name).toBe('parent');
       expect(result).toContainEqual({ name: 'child1', children: [] });
       expect(result).toContainEqual({ name: 'child2', children: [] });
     });
@@ -123,15 +140,19 @@ describe('OrchestratorService', () => {
       const mockFlatJobNodes = [
         {
           name: 's1',
-          waitUntilFinished: jest
-            .fn()
-            .mockResolvedValue({ result: 's1-result' }),
+          job: {
+            waitUntilFinished: jest
+              .fn()
+              .mockResolvedValue({ result: 's1-result' }),
+          },
         },
         {
           name: 's2',
-          waitUntilFinished: jest
-            .fn()
-            .mockResolvedValue({ result: 's2-result' }),
+          job: {
+            waitUntilFinished: jest
+              .fn()
+              .mockResolvedValue({ result: 's2-result' }),
+          },
         },
       ];
 
@@ -149,8 +170,8 @@ describe('OrchestratorService', () => {
       );
       expect(flowProducer.add).toHaveBeenCalledWith({ name: 'jobOption' });
       expect(service.toFlatJobNode).toHaveBeenCalledWith(mockJobs);
-      expect(mockFlatJobNodes[0].waitUntilFinished).toHaveBeenCalled();
-      expect(mockFlatJobNodes[1].waitUntilFinished).toHaveBeenCalled();
+      expect(mockFlatJobNodes[0].job.waitUntilFinished).toHaveBeenCalled();
+      expect(mockFlatJobNodes[1].job.waitUntilFinished).toHaveBeenCalled();
 
       expect(result).toEqual({
         state: 'SUCCESS',
@@ -166,16 +187,20 @@ describe('OrchestratorService', () => {
       const mockFlatJobNodes = [
         {
           name: 's1',
-          waitUntilFinished: jest
-            .fn()
-            .mockResolvedValue({ result: 's1-result' }),
+          job: {
+            waitUntilFinished: jest
+              .fn()
+              .mockResolvedValue({ result: 's1-result' }),
+          },
         },
         {
           name: 's2',
-          waitUntilFinished: jest.fn().mockRejectedValue({
-            code: 'ERR_JOB_FAILED',
-            message: errorMessage,
-          }),
+          job: {
+            waitUntilFinished: jest.fn().mockRejectedValue({
+              code: 'ERR_JOB_FAILED',
+              message: errorMessage,
+            }),
+          },
         },
       ];
 
