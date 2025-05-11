@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { BatchRepository } from './batch.repository';
 import { CreateBatchDefinitionDto } from './dto/create-batch-definition.dto';
 import { SchedulerRegistry } from '@nestjs/schedule';
@@ -7,9 +7,12 @@ import { BatchDefinitionDto } from './dto/batch-definition.dto';
 import { BatchPlanService } from './batch-plan.service';
 import { OrchestratorService } from '../orchestrator/orchestrator.service';
 import { getElapsedTime } from '../common/date';
+import { BatchInstanceDto } from './dto/batch-instance.dto';
 
 @Injectable()
 export class BatchService {
+  private readonly logger = new Logger(BatchService.name);
+
   constructor(
     private readonly schedulerRegistry: SchedulerRegistry,
     private readonly batchPlanService: BatchPlanService,
@@ -32,6 +35,7 @@ export class BatchService {
   }
 
   async synchronizeBatchDefinition() {
+    this.logger.log('BatchService - synchronizeBatchDefinition');
     const cronJobs = this.schedulerRegistry.getCronJobs();
 
     for (const [name] of cronJobs) {
@@ -42,27 +46,45 @@ export class BatchService {
       await this.batchRepository.findAllBatchDefinition();
 
     for (const batchDefinition of batchDefinitions) {
+      this.logger.log(
+        `BatchService - synchronizeBatchDefinition - ${batchDefinition.name}`,
+      );
       await this.addSchedule(batchDefinition as BatchDefinitionDto);
     }
   }
 
   async addSchedule(batchDefinition: BatchDefinitionDto) {
-    this.schedulerRegistry.addCronJob(
-      batchDefinition.name,
-      new CronJob(batchDefinition.cron, async () => {
-        const batchPlanList = await this.batchPlanService.plan(batchDefinition);
+    this.logger.log(`BatchService - addSchedule - ${batchDefinition.name}`);
+    this.logger.log(batchDefinition);
 
-        for (const batchPlan of batchPlanList) {
-          await this.executeBatch(batchPlan);
-        }
-      }),
+    const cronJob = new CronJob(batchDefinition.cron, () => {
+      this.batchPlanService
+        .plan(batchDefinition)
+        .then((batchPlanList) => {
+          this.logger.log('start execute batch');
+          for (const batchPlan of batchPlanList) {
+            this.logger.log(batchPlan);
+            this.executeBatch(batchPlan);
+          }
+        })
+        .catch((error) => {
+          this.logger.error(error);
+        });
+    });
+
+    this.schedulerRegistry.addCronJob(batchDefinition.name, cronJob);
+    cronJob.start();
+
+    this.logger.log(
+      `BatchService - addSchedule - ${batchDefinition.name} - 완료`,
     );
   }
 
-  async executeBatch(batchPlan: BatchDefinitionDto) {
+  async executeBatch(batchPlan: BatchInstanceDto & { name: string }) {
+    this.logger.log(`BatchService - executeBatch - ${batchPlan.name}`);
     const startedAt = new Date();
     this.orchestratorService
-      .orchestrate(batchPlan.name, batchPlan)
+      .orchestrate(batchPlan.name, batchPlan.data)
       .then(async (result) => {
         const finishedAt = new Date();
         const elapsedTime = getElapsedTime(startedAt, finishedAt);
