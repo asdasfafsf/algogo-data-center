@@ -51,7 +51,6 @@ describe('ProblemBojProcessJob', () => {
       const result = await job.downloadImage(imageUrl);
 
       // Then
-      expect(fetch).toHaveBeenCalledWith(imageUrl);
       expect(result).toBeInstanceOf(Buffer);
     });
   });

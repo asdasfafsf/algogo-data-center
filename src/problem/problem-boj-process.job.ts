@@ -81,7 +81,21 @@ export class ProblemBojProcessJob
   }
 
   async downloadImage(src: string) {
-    const response = await fetch(src);
+    if (!src.startsWith('http')) {
+      src = `https://acmicpc.net${src}`;
+    }
+    const response = await fetch(src, {
+      headers: {
+        'sec-ch-ua':
+          '"Chromium";v="136", "Google Chrome";v="136", "Not.A/Brand";v="99"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"macOS"',
+        Referer: 'https://www.acmicpc.net/',
+        'Referrer-Policy': 'strict-origin',
+      },
+      body: null,
+      method: 'GET',
+    });
     const buffer = await response.arrayBuffer();
     return Buffer.from(buffer);
   }
