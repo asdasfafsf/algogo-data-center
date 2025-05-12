@@ -19,6 +19,7 @@ import { ProblemModule } from './problem/problem.module';
 import { BullModule } from '@nestjs/bullmq';
 import { S3Module } from './s3/s3.module';
 import { S3Config } from './config/S3Config';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { S3Config } from './config/S3Config';
       }),
       inject: [BullMQConfig.KEY],
     }),
+    ScheduleModule.forRoot(),
     DiscoveryModule,
     NemoModule,
     PrismaModule,

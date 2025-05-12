@@ -5,6 +5,7 @@ import { PROBLEM_BOJ_PROCESS } from '../job/constants/job.constants';
 import { AcmicpcResponse } from './types/acmicpc.type';
 import { S3Service } from '../s3/s3.service';
 import { parse } from 'node-html-parser';
+import * as path from 'path';
 
 @Injectable()
 @JobHandler(PROBLEM_BOJ_PROCESS)
@@ -70,9 +71,10 @@ export class ProblemBojProcessJob
       const src = image.getAttribute('src');
       if (src) {
         const imageBuffer = await this.downloadImage(src);
+        const extName = path.extname(src) || '.png';
         const newSrc = await this.s3Service.uploadFile(
           imageBuffer,
-          `${fileName}_${++count}.png`,
+          `${fileName}_${++count}${extName}`,
         );
         image.setAttribute('src', newSrc.url);
       }
@@ -81,8 +83,35 @@ export class ProblemBojProcessJob
   }
 
   async downloadImage(src: string) {
-    const response = await fetch(src);
-    const buffer = await response.arrayBuffer();
-    return Buffer.from(buffer);
+    const requestHeaders = {
+      accept:
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+      'accept-language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
+      'cache-control': 'no-cache',
+      pragma: 'no-cache',
+      priority: 'u=0, i',
+      'sec-ch-ua':
+        '"Google Chrome";v="125", "Chromium";v="125", "Not.A/Brand";v="24"',
+      'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-platform': '"macOS"',
+      'sec-fetch-dest': 'document',
+      'sec-fetch-mode': 'navigate',
+      'sec-fetch-site': 'same-origin',
+      'sec-fetch-user': '?1',
+      'upgrade-insecure-requests': '1',
+      referrer: 'https://www.acmicpc.net/',
+      referrerPolicy: 'strict-origin',
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0',
+    };
+    if (!src.startsWith('http')) {
+      src = `https://acmicpc.net/${src}`;
+    }
+    const response = await fetch(src, {
+      headers: requestHeaders,
+      method: 'GET',
+    });
+    const arrayBuffer = await response.arrayBuffer();
+    return Buffer.from(arrayBuffer);
   }
 }

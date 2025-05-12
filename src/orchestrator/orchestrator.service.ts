@@ -1,15 +1,18 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { OrchestratorRepository } from './orchestrator.repository';
 import { uuidv7 } from 'uuidv7';
-import { FlowProducer } from 'bullmq';
+import { FlowProducer, JobNode, QueueEvents } from 'bullmq';
 import { BullMQConfig } from '../config/BullMQConfig';
 import { ConfigType } from '@nestjs/config';
 import { ORCHESTRATOR_FLOW_PRODUCER } from './constants/injection';
 
 @Injectable()
 export class OrchestratorService {
+  private readonly logger = new Logger(OrchestratorService.name);
+  private queueEvents: QueueEvents;
+
   constructor(
     private readonly orchestratorRepository: OrchestratorRepository,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
@@ -17,7 +20,15 @@ export class OrchestratorService {
     private bullmqConfig: ConfigType<typeof BullMQConfig>,
     @Inject(ORCHESTRATOR_FLOW_PRODUCER)
     private flowProducer: FlowProducer,
-  ) {}
+  ) {
+    this.queueEvents = new QueueEvents(this.bullmqConfig.queueName, {
+      connection: {
+        host: this.bullmqConfig.host,
+        port: this.bullmqConfig.port,
+        password: this.bullmqConfig.password,
+      },
+    });
+  }
 
   async getJobDefinition(name: string) {
     const jobDefinitionStr = await this.cacheManager.get(
@@ -74,7 +85,24 @@ export class OrchestratorService {
     return jobOption;
   }
 
+  async toFlatJobNode(jobOption: JobNode) {
+    const jobNodes: JobNode[] = [];
+    const stack = [jobOption];
+
+    while (stack.length) {
+      const jobNode = stack.pop();
+      jobNodes.push(jobNode);
+
+      if (jobNode.children) {
+        stack.push(...jobNode.children);
+      }
+    }
+
+    return jobNodes;
+  }
+
   async orchestrate(name: string, data: any) {
+    this.logger.log(`OrchestratorService - orchestrate - ${name}`);
     const jobDefinition = await this.getJobDefinition(name);
     const uuid = uuidv7();
     const { stepList } = jobDefinition;
@@ -85,6 +113,29 @@ export class OrchestratorService {
     };
 
     const jobOption = await this.generateJob(stepList, newData);
-    await this.flowProducer.add(jobOption);
+    const jobs = await this.flowProducer.add(jobOption);
+    const flatJobNodes = await this.toFlatJobNode(jobs);
+
+    const settled = await Promise.allSettled(
+      flatJobNodes.map((jobNode) =>
+        jobNode.job.waitUntilFinished(this.queueEvents),
+      ),
+    );
+
+    const rejectedJob = settled.find((elem) => elem.status === 'rejected');
+
+    this.logger.log(`OrchestratorService - orchestrate - ${name} - 완료`);
+    if (rejectedJob) {
+      return {
+        state: 'FAILED',
+        errorCode: rejectedJob.reason?.code,
+        errorMessage: rejectedJob.reason?.message,
+      };
+    }
+
+    return {
+      state: 'SUCCESS',
+      data: newData,
+    };
   }
 }

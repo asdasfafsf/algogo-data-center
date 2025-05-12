@@ -47,6 +47,7 @@ describe('S3Service', () => {
     expect(S3).toHaveBeenCalledWith({
       region: mockS3Config.region,
       forcePathStyle: true,
+      endpoint: mockS3Config.endpoint,
       credentials: {
         accessKeyId: mockS3Config.accessKey,
         secretAccessKey: mockS3Config.secretKey,
