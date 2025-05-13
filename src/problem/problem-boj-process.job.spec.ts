@@ -155,6 +155,7 @@ describe('ProblemBojProcessJob', () => {
         limit: '<div>제한사항</div>',
         hint: '<div><img src="https://example.com/hint.png"></div>',
         etc: '',
+        style: '',
         sourceUrl: 'https://boj.kr/1000',
         inputOutputList: [
           {

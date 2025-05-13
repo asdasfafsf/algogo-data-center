@@ -28,6 +28,8 @@ export type AcmicpcResponse = {
   protocol: string;
   etc: string;
 
+  style: string;
+
   isSpecialJudge: boolean;
   isSubTask: boolean;
   isFunction: boolean;
