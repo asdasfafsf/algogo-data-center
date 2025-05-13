@@ -82,8 +82,10 @@ export class ProblemBojLoadJob
             name: type,
           })),
         },
+        style: data.style,
       },
       update: {
+        style: data.style,
         title: data.title,
         input: data.input,
         output: data.output,
