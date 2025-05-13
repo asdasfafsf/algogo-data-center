@@ -11,10 +11,19 @@ export class CreateBatchDefinitionDto {
   })
   @IsString()
   @IsNotEmpty()
-  @IsIn(Object.values(BATCH_PLAN_MAP), {
-    message: `name은 다음 중 하나여야 합니다: ${Object.values(BATCH_PLAN_MAP).join(', ')}`,
-  })
   name: string;
+
+  @ApiProperty({
+    description: '배치 작업 이름',
+    enum: Object.values(BATCH_PLAN_MAP),
+    example: 'PROBLEM_BOJ',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(Object.values(BATCH_PLAN_MAP), {
+    message: `jobName은 다음 중 하나여야 합니다: ${Object.values(BATCH_PLAN_MAP).join(', ')}`,
+  })
+  jobName: string;
 
   @ApiProperty({
     description: '배치 작업 설명',

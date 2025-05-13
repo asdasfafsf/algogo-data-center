@@ -21,6 +21,7 @@ describe('ProblemBojPlan', () => {
     description: 'Sync BOJ problems',
     createdAt: new Date(),
     updatedAt: new Date(),
+    jobName: 'PROBLEM_BOJ',
   };
 
   beforeEach(async () => {

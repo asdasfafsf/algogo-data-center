@@ -37,6 +37,7 @@ describe('BatchController', () => {
         {
           no: 1,
           name: 'PROBLEM_BOJ',
+          jobName: 'PROBLEM_BOJ',
           description: '테스트 설명',
           cron: '0 0 * * *',
           createdAt: new Date(),
@@ -61,6 +62,7 @@ describe('BatchController', () => {
       // Given
       const validDto: CreateBatchDefinitionDto = {
         name: 'PROBLEM_BOJ',
+        jobName: 'PROBLEM_BOJ',
         description: '테스트 설명',
         cron: '0 0 * * *',
       };
@@ -72,10 +74,11 @@ describe('BatchController', () => {
       expect(service.saveBatchDefinition).toHaveBeenCalledWith(validDto);
     });
 
-    it('잘못된 name으로 요청 시 400 에러를 반환해야 한다', async () => {
+    it('잘못된 jobName으로 요청 시 400 에러를 반환해야 한다', async () => {
       // Given
-      const invalidDto: CreateBatchDefinitionDto = {
-        name: 'INVALID_NAME',
+      const invalidDto = {
+        name: 'PROBLEM_BOJ',
+        jobName: 'INVALID_JOB_NAME', // 유효하지 않은 jobName
         description: '테스트 설명',
         cron: '0 0 * * *',
       };
@@ -91,8 +94,9 @@ describe('BatchController', () => {
 
     it('잘못된 cron 표현식으로 요청 시 400 에러를 반환해야 한다', async () => {
       // Given
-      const invalidDto: CreateBatchDefinitionDto = {
+      const invalidDto = {
         name: 'PROBLEM_BOJ',
+        jobName: 'PROBLEM_BOJ',
         description: '테스트 설명',
         cron: 'invalid cron',
       };
@@ -108,8 +112,9 @@ describe('BatchController', () => {
 
     it('설명이 500자를 초과하면 400 에러를 반환해야 한다', async () => {
       // Given
-      const invalidDto: CreateBatchDefinitionDto = {
+      const invalidDto = {
         name: 'PROBLEM_BOJ',
+        jobName: 'PROBLEM_BOJ',
         description: 'a'.repeat(501),
         cron: '0 0 * * *',
       };

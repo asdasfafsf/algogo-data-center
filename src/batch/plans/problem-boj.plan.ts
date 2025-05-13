@@ -19,7 +19,7 @@ export class ProblemBojPlan implements BatchPlan {
 
     const problemNumbers = sourceIds
       .map((problem) => Number(problem.sourceId))
-      .filter((num) => !isNaN(num))
+      .filter((num) => !isNaN(num) && num >= 1000)
       .sort((a, b) => a - b);
 
     let problemNo: number;
@@ -28,20 +28,26 @@ export class ProblemBojPlan implements BatchPlan {
       problemNo = 1000;
     } else {
       let foundGap = false;
-      let prev = problemNumbers[0];
 
-      for (let i = 1; i < problemNumbers.length; i++) {
-        const current = problemNumbers[i];
-        if (current - prev > 1) {
-          problemNo = prev + 1;
-          foundGap = true;
-          break;
+      if (problemNumbers[0] > 1000) {
+        problemNo = 1000;
+        foundGap = true;
+      } else {
+        let prev = problemNumbers[0];
+
+        for (let i = 1; i < problemNumbers.length; i++) {
+          const current = problemNumbers[i];
+          if (current - prev > 1) {
+            problemNo = prev + 1;
+            foundGap = true;
+            break;
+          }
+          prev = current;
         }
-        prev = current;
-      }
 
-      if (!foundGap) {
-        problemNo = problemNumbers.at(-1) + 1;
+        if (!foundGap) {
+          problemNo = problemNumbers.at(-1) + 1;
+        }
       }
     }
 

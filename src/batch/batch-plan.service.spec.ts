@@ -43,6 +43,7 @@ describe('BatchPlanService', () => {
       const batchDefinition: BatchDefinitionDto = {
         no: 1,
         name: 'testBatch',
+        jobName: 'PROBLEM_BOJ',
         cron: '0 0 * * *',
         description: '테스트 배치',
         createdAt: new Date('2023-01-01'),
@@ -81,6 +82,7 @@ describe('BatchPlanService', () => {
       const batchDefinition: BatchDefinitionDto = {
         no: 1,
         name: 'nonExistentBatch',
+        jobName: 'PROBLEM_BOJ',
         cron: '0 0 * * *',
         description: '존재하지 않는 배치',
         createdAt: new Date('2023-01-01'),
@@ -103,6 +105,7 @@ describe('BatchPlanService', () => {
       const batchDefinition: BatchDefinitionDto = {
         no: 1,
         name: 'errorBatch',
+        jobName: 'PROBLEM_BOJ',
         cron: '0 0 * * *',
         description: '오류 발생 배치',
         createdAt: new Date('2023-01-01'),
@@ -130,6 +133,7 @@ describe('BatchPlanService', () => {
       const batchDefinition: BatchDefinitionDto = {
         no: 1,
         name: 'instanceErrorBatch',
+        jobName: 'PROBLEM_BOJ',
         cron: '0 0 * * *',
         description: '인스턴스 생성 오류 배치',
         createdAt: new Date('2023-01-01'),
