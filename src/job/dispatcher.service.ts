@@ -14,8 +14,8 @@ export class DispatcherService {
   ) {}
 
   async getNextData({ uuid }: { key: JobHandlerKey; uuid: string }) {
-    const jobInstances = await this.jobRepository.findJobInstanceByUuid(uuid);
-
+    const jobInstances = await this.jobRepository.findJobInstancesByUuid(uuid);
+    jobInstances.sort((a, b) => a.startedAt.getTime() - b.startedAt.getTime());
     return jobInstances.at(-1)?.result;
   }
 

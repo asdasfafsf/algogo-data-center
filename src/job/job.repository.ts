@@ -142,13 +142,10 @@ export class JobRepository {
     });
   }
 
-  async findJobInstanceByUuid(uuid: string) {
+  async findJobInstancesByUuid(uuid: string) {
     return this.prisma.jobInstance.findMany({
       where: {
         uuid,
-      },
-      orderBy: {
-        startedAt: 'asc',
       },
     });
   }
