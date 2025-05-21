@@ -34,6 +34,12 @@ export class ProblemBojLoadJob
           problemUuid: problem.uuid,
         },
       });
+
+      await this.prisma.problemV2SubTask.deleteMany({
+        where: {
+          problemUuid: problem.uuid,
+        },
+      });
     }
 
     await this.prisma.problemV2.upsert({
@@ -77,6 +83,19 @@ export class ProblemBojLoadJob
             order: index,
           })),
         },
+        subTaskList: {
+          create: data.subTaskList.map((subTask) => ({
+            order: subTask.order,
+            title: subTask.title,
+            content: subTask.content,
+          })),
+        },
+        customExample: data.customExample,
+        customImplementation: data.customImplementation,
+        customGrader: data.customGrader,
+        customNotes: data.customNotes,
+        customAttachment: data.customAttachment,
+        problemSource: data.problemSource,
         typeList: {
           create: data.typeList.map((type) => ({
             name: type,
@@ -117,6 +136,19 @@ export class ProblemBojLoadJob
             order: index,
           })),
         },
+        subTaskList: {
+          create: data.subTaskList.map((subTask) => ({
+            order: subTask.order,
+            title: subTask.title,
+            content: subTask.content,
+          })),
+        },
+        customExample: data.customExample,
+        customImplementation: data.customImplementation,
+        customGrader: data.customGrader,
+        customNotes: data.customNotes,
+        customAttachment: data.customAttachment,
+        problemSource: data.problemSource,
         typeList: {
           create: data.typeList.map((type) => ({
             name: type,

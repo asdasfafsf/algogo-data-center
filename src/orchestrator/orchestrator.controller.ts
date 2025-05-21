@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { OrchestratorService } from './orchestrator.service';
 
 @Controller('api/v1/orchestrator')
@@ -6,9 +6,9 @@ export class OrchestratorController {
   constructor(private readonly orchestratorService: OrchestratorService) {}
 
   @Get()
-  async test() {
+  async test(@Query('problemId') problemId: string) {
     return await this.orchestratorService.orchestrate('PROBLEM_BOJ', {
-      sourceId: '22572',
+      sourceId: problemId,
       source: 'acmicpc',
     });
   }
