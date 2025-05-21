@@ -96,6 +96,13 @@ export class ProblemBojLoadJob
         customNotes: data.customNotes,
         customAttachment: data.customAttachment,
         problemSource: data.problemSource,
+        customSample: data.customSample,
+        languageLimitList: {
+          create: data.languageLimitList.map((languageLimit) => ({
+            language: languageLimit,
+          })),
+        },
+        isLanguageRestrict: data.isLanguageRestrict,
         typeList: {
           create: data.typeList.map((type) => ({
             name: type,
@@ -128,6 +135,7 @@ export class ProblemBojLoadJob
         isInteractive: data.isInteractive,
         isTwoStep: data.isTwoStep,
         isClass: data.isClass,
+        isLanguageRestrict: data.isLanguageRestrict,
         inputOutputList: {
           create: data.inputOutputList.map((inputOutput, index) => ({
             input: inputOutput.input,
@@ -149,6 +157,12 @@ export class ProblemBojLoadJob
         customNotes: data.customNotes,
         customAttachment: data.customAttachment,
         problemSource: data.problemSource,
+        customSample: data.customSample,
+        languageLimitList: {
+          create: data.languageLimitList.map((languageLimit) => ({
+            language: languageLimit,
+          })),
+        },
         typeList: {
           create: data.typeList.map((type) => ({
             name: type,

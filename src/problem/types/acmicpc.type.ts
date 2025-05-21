@@ -27,8 +27,9 @@ export type AcmicpcResponse = {
   customGrader: string;
   customNotes: string;
   customAttachment: string;
+  customSample: string;
   problemSource: string;
-
+  languageLimitList: string[];
   input: string;
   output: string;
   style: string;
@@ -43,6 +44,7 @@ export type AcmicpcResponse = {
   isInteractive: boolean;
   isTwoStep: boolean;
   isClass: boolean;
+  isLanguageRestrict: boolean;
 };
 
 export type AcmicpcSubTask = {
