@@ -173,6 +173,16 @@ describe('ProblemBojProcessJob', () => {
         isInteractive: false,
         isTwoStep: false,
         isClass: false,
+        subTaskList: [],
+        customExample: '',
+        customImplementation: '',
+        customGrader: '',
+        customNotes: '',
+        customAttachment: '',
+        customSample: '',
+        problemSource: '',
+        languageLimitList: [],
+        isLanguageRestrict: false,
       };
 
       // processImage 모킹
