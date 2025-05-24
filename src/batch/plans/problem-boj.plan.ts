@@ -19,7 +19,7 @@ export class ProblemBojPlan implements BatchPlan {
 
     const nonTargets = [
       1320, 1382, 1383, 1403, 1714, 1794, 1903, 1923, 1961, 1984, 2165, 2182,
-      2308, 2400, 2746,
+      2308, 2368, 2400, 2746,
     ];
     const nonTargetsSet = new Set(nonTargets);
     const problemNumbers = sourceIds
