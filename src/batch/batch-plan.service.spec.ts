@@ -42,7 +42,7 @@ describe('BatchPlanService', () => {
       // Given
       const batchDefinition: BatchDefinitionDto = {
         no: 1,
-        name: 'testBatch',
+        name: 'PROBLEM_BOJ',
         jobName: 'PROBLEM_BOJ',
         cron: '0 0 * * *',
         description: '테스트 배치',
@@ -52,14 +52,14 @@ describe('BatchPlanService', () => {
 
       const mockBatchPlan = {
         plan: jest.fn().mockResolvedValue([
-          { name: 'testBatch', data: { param1: 'value1' } },
-          { name: 'testBatch', data: { param2: 'value2' } },
+          { name: 'PROBLEM_BOJ', data: { param1: 'value1' } },
+          { name: 'PROBLEM_BOJ', data: { param2: 'value2' } },
         ]),
       };
 
       const mockBatchInstances = [
-        { no: 1, name: 'testBatch', state: 'PENDING' },
-        { no: 2, name: 'testBatch', state: 'PENDING' },
+        { no: 1, name: 'PROBLEM_BOJ', state: 'PENDING' },
+        { no: 2, name: 'PROBLEM_BOJ', state: 'PENDING' },
       ];
 
       (batchPlanRegistry.get as jest.Mock).mockReturnValue(mockBatchPlan);
@@ -71,7 +71,7 @@ describe('BatchPlanService', () => {
       const result = await service.plan(batchDefinition);
 
       // Then
-      expect(batchPlanRegistry.get).toHaveBeenCalledWith('testBatch');
+      expect(batchPlanRegistry.get).toHaveBeenCalledWith('PROBLEM_BOJ');
       expect(mockBatchPlan.plan).toHaveBeenCalledWith(batchDefinition);
       expect(batchRepository.createBatchInstance).toHaveBeenCalledTimes(2);
       expect(result).toEqual(mockBatchInstances);
