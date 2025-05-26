@@ -5,7 +5,9 @@ import { DispatcherService } from '../job/dispatcher.service';
 import { JobHandlerKey } from '../job/types/job.type';
 
 @Injectable()
-@Processor(process.env.BULLMQ_QUEUE_NAME || 'job')
+@Processor(process.env.BULLMQ_QUEUE_NAME || 'job', {
+  concurrency: 3,
+})
 export class WorkerService extends WorkerHost {
   private readonly logger = new Logger(WorkerService.name);
   constructor(private readonly dispatcherService: DispatcherService) {
