@@ -28,7 +28,7 @@ export class ProblemBojCollectJob
         key: sourceId,
       },
       config: {
-        timeout: 30000,
+        timeout: 4000,
       },
     });
     return nemoResponse.data;
