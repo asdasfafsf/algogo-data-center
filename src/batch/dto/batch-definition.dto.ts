@@ -14,7 +14,7 @@ export class BatchDefinitionDto {
   name: string;
 
   @ApiProperty({
-    description: '배치 작업 이름',
+    description: '실제 배치가 실행하는 작업 이름',
     example: 'PROBLEM_BOJ',
   })
   jobName: string;
