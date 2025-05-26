@@ -46,7 +46,7 @@ export class DispatcherService {
       }
 
       const result = await job.run(nextData);
-      this.logger.log(`Job ${key} finished`, result);
+      this.logger.log(`Job ${key} finished`);
       const finishedAt = new Date();
       const elapsedTime = getElapsedTime(startedAt, finishedAt);
 
