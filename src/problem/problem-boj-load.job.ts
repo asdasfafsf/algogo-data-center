@@ -84,11 +84,12 @@ export class ProblemBojLoadJob
           })),
         },
         subTaskList: {
-          create: data.subTaskList.map((subTask) => ({
-            order: subTask.order,
-            title: subTask.title,
-            content: subTask.content,
-          })),
+          create:
+            data?.subTaskList.map((subTask) => ({
+              order: subTask.order,
+              title: subTask.title,
+              content: subTask.content,
+            })) ?? [],
         },
         customExample: data.customExample,
         customImplementation: data.customImplementation,
@@ -98,9 +99,10 @@ export class ProblemBojLoadJob
         problemSource: data.problemSource,
         customSample: data.customSample,
         languageLimitList: {
-          create: data.languageLimitList.map((languageLimit) => ({
-            language: languageLimit,
-          })),
+          create:
+            data?.languageLimitList?.map((languageLimit) => ({
+              language: languageLimit,
+            })) ?? [],
         },
         isLanguageRestrict: data.isLanguageRestrict,
         typeList: {
@@ -145,11 +147,12 @@ export class ProblemBojLoadJob
           })),
         },
         subTaskList: {
-          create: data.subTaskList.map((subTask) => ({
-            order: subTask.order,
-            title: subTask.title,
-            content: subTask.content,
-          })),
+          create:
+            data?.subTaskList.map((subTask) => ({
+              order: subTask.order,
+              title: subTask.title,
+              content: subTask.content,
+            })) ?? [],
         },
         customExample: data.customExample,
         customImplementation: data.customImplementation,
@@ -159,9 +162,10 @@ export class ProblemBojLoadJob
         problemSource: data.problemSource,
         customSample: data.customSample,
         languageLimitList: {
-          create: data.languageLimitList.map((languageLimit) => ({
-            language: languageLimit,
-          })),
+          create:
+            data?.languageLimitList?.map((languageLimit) => ({
+              language: languageLimit,
+            })) ?? [],
         },
         typeList: {
           create: data.typeList.map((type) => ({
