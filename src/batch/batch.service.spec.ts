@@ -75,6 +75,7 @@ describe('BatchService', () => {
     it('배치 정의를 저장소에 저장해야 함', async () => {
       const batchDefinition: CreateBatchDefinitionDto = {
         name: 'testBatch',
+        jobName: 'PROBLEM_BOJ',
         cron: '0 0 * * *',
         description: '테스트 배치',
       };
@@ -94,6 +95,7 @@ describe('BatchService', () => {
     it('저장 실패 시 동기화를 수행하지 않아야 함', async () => {
       const batchDefinition: CreateBatchDefinitionDto = {
         name: 'testBatch',
+        jobName: 'PROBLEM_BOJ',
         cron: '0 0 * * *',
         description: '테스트 배치',
       };
@@ -162,6 +164,7 @@ describe('BatchService', () => {
         description: '테스트 배치',
         createdAt: new Date(),
         updatedAt: new Date(),
+        jobName: 'PROBLEM_BOJ',
       };
       const mockCronJob = { start: jest.fn() };
       (CronJob as jest.MockedClass<typeof CronJob>).mockImplementation(
@@ -185,6 +188,7 @@ describe('BatchService', () => {
         description: '테스트 배치',
         createdAt: new Date(),
         updatedAt: new Date(),
+        jobName: 'PROBLEM_BOJ',
       };
       let cronJobCallback: () => any;
       (CronJob as jest.MockedClass<typeof CronJob>).mockImplementation(
@@ -225,6 +229,7 @@ describe('BatchService', () => {
         description: '테스트 배치',
         createdAt: new Date(),
         updatedAt: new Date(),
+        jobName: 'PROBLEM_BOJ',
       };
       const error = new Error('CronJob 생성 실패');
       (CronJob as jest.MockedClass<typeof CronJob>).mockImplementation(() => {
@@ -243,6 +248,7 @@ describe('BatchService', () => {
         description: '테스트 배치',
         createdAt: new Date(),
         updatedAt: new Date(),
+        jobName: 'PROBLEM_BOJ',
       };
       const error = new Error('CronJob 생성 실패');
       (schedulerRegistry.addCronJob as jest.Mock).mockImplementation(() => {

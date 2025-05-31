@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { BatchDefinitionDto } from './dto/batch-definition.dto';
 import { BatchPlanRegistry } from './batch-plan.registry';
 import { BatchRepository } from './batch.repository';
-
+import { BatchInstanceDto } from './dto/batch-instance.dto';
 @Injectable()
 export class BatchPlanService {
   private readonly logger = new Logger(BatchPlanService.name);
@@ -21,14 +21,14 @@ export class BatchPlanService {
       }
 
       const planList = await batchPlan.plan(batchDefinition);
-      const batchInstanceList = [];
+      const batchInstanceList: (BatchInstanceDto & { name: string })[] = [];
 
       for (const plan of planList) {
         const batchInstance =
           await this.batchRepository.createBatchInstance(plan);
         batchInstanceList.push({
           ...batchInstance,
-          name: batchDefinition.name,
+          name: batchDefinition.jobName,
         });
       }
       return batchInstanceList;

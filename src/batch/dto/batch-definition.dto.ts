@@ -14,6 +14,12 @@ export class BatchDefinitionDto {
   name: string;
 
   @ApiProperty({
+    description: '실제 배치가 실행하는 작업 이름',
+    example: 'PROBLEM_BOJ',
+  })
+  jobName: string;
+
+  @ApiProperty({
     description: '배치 작업 설명',
     example: '백준 온라인 저지의 문제 데이터를 동기화합니다.',
   })

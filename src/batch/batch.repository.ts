@@ -11,6 +11,7 @@ export class BatchRepository {
     await this.prisma.batchDefinition.create({
       data: {
         name: batchDefinition.name,
+        jobName: batchDefinition.jobName,
         cron: batchDefinition.cron,
         description: batchDefinition.description,
       },

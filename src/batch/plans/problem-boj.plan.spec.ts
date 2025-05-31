@@ -10,7 +10,7 @@ describe('ProblemBojPlan', () => {
 
   const mockPrismaService = {
     problemV2: {
-      findFirst: jest.fn(),
+      findMany: jest.fn(),
     },
   };
 
@@ -21,6 +21,7 @@ describe('ProblemBojPlan', () => {
     description: 'Sync BOJ problems',
     createdAt: new Date(),
     updatedAt: new Date(),
+    jobName: 'PROBLEM_BOJ',
   };
 
   beforeEach(async () => {
@@ -42,9 +43,9 @@ describe('ProblemBojPlan', () => {
   });
 
   describe('plan', () => {
-    it('마지막 문제가 없을 경우 1001번부터 시작해야 한다', async () => {
+    it('마지막 문제가 없을 경우 1000번부터 시작해야 한다', async () => {
       // Given
-      mockPrismaService.problemV2.findFirst.mockResolvedValue(null);
+      mockPrismaService.problemV2.findMany.mockResolvedValue([]);
 
       // When
       const result = await plan.plan(mockBatchDefinition);
@@ -56,7 +57,7 @@ describe('ProblemBojPlan', () => {
           state: 'PENDING',
           data: {
             source: 'acmicpc',
-            sourceId: '1001',
+            sourceId: '1000',
           },
         },
       ];
@@ -66,8 +67,31 @@ describe('ProblemBojPlan', () => {
 
     it('마지막 문제가 있을 경우 다음 번호부터 시작해야 한다', async () => {
       // Given
-      const lastProblem = { sourceId: '1000' };
-      mockPrismaService.problemV2.findFirst.mockResolvedValue(lastProblem);
+      const lastProblem = [{ sourceId: '1000' }, { sourceId: '1001' }];
+      mockPrismaService.problemV2.findMany.mockResolvedValue(lastProblem);
+
+      // When
+      const result = await plan.plan(mockBatchDefinition);
+
+      // Then
+      const expected: CreateBatchInstanceDto[] = [
+        {
+          batchDefinitionNo: mockBatchDefinition.no,
+          state: 'PENDING',
+          data: {
+            source: 'acmicpc',
+            sourceId: '1002',
+          },
+        },
+      ];
+
+      expect(result).toEqual(expected);
+    });
+
+    it('중간에 빈 번호가 있을 경우 빈 번호부터 시작해야 함', async () => {
+      // Given
+      const lastProblem = [{ sourceId: '1000' }, { sourceId: '1002' }];
+      mockPrismaService.problemV2.findMany.mockResolvedValue(lastProblem);
 
       // When
       const result = await plan.plan(mockBatchDefinition);
@@ -85,24 +109,6 @@ describe('ProblemBojPlan', () => {
       ];
 
       expect(result).toEqual(expected);
-    });
-
-    it('PrismaService의 findFirst가 올바른 파라미터로 호출되어야 한다', async () => {
-      // Given
-      mockPrismaService.problemV2.findFirst.mockResolvedValue(null);
-
-      // When
-      await plan.plan(mockBatchDefinition);
-
-      // Then
-      expect(mockPrismaService.problemV2.findFirst).toHaveBeenCalledWith({
-        select: {
-          sourceId: true,
-        },
-        orderBy: {
-          no: 'desc',
-        },
-      });
     });
   });
 });

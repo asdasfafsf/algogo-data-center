@@ -34,6 +34,12 @@ export class ProblemBojLoadJob
           problemUuid: problem.uuid,
         },
       });
+
+      await this.prisma.problemV2SubTask.deleteMany({
+        where: {
+          problemUuid: problem.uuid,
+        },
+      });
     }
 
     await this.prisma.problemV2.upsert({
@@ -77,13 +83,37 @@ export class ProblemBojLoadJob
             order: index,
           })),
         },
+        subTaskList: {
+          create:
+            data?.subTaskList.map((subTask) => ({
+              order: subTask.order,
+              title: subTask.title,
+              content: subTask.content,
+            })) ?? [],
+        },
+        customExample: data.customExample,
+        customImplementation: data.customImplementation,
+        customGrader: data.customGrader,
+        customNotes: data.customNotes,
+        customAttachment: data.customAttachment,
+        problemSource: data.problemSource,
+        customSample: data.customSample,
+        languageLimitList: {
+          create:
+            data?.languageLimitList?.map((languageLimit) => ({
+              language: languageLimit,
+            })) ?? [],
+        },
+        isLanguageRestrict: data.isLanguageRestrict,
         typeList: {
           create: data.typeList.map((type) => ({
             name: type,
           })),
         },
+        style: data.style,
       },
       update: {
+        style: data.style,
         title: data.title,
         input: data.input,
         output: data.output,
@@ -107,6 +137,7 @@ export class ProblemBojLoadJob
         isInteractive: data.isInteractive,
         isTwoStep: data.isTwoStep,
         isClass: data.isClass,
+        isLanguageRestrict: data.isLanguageRestrict,
         inputOutputList: {
           create: data.inputOutputList.map((inputOutput, index) => ({
             input: inputOutput.input,
@@ -114,6 +145,27 @@ export class ProblemBojLoadJob
             content: inputOutput.content,
             order: index,
           })),
+        },
+        subTaskList: {
+          create:
+            data?.subTaskList.map((subTask) => ({
+              order: subTask.order,
+              title: subTask.title,
+              content: subTask.content,
+            })) ?? [],
+        },
+        customExample: data.customExample,
+        customImplementation: data.customImplementation,
+        customGrader: data.customGrader,
+        customNotes: data.customNotes,
+        customAttachment: data.customAttachment,
+        problemSource: data.problemSource,
+        customSample: data.customSample,
+        languageLimitList: {
+          create:
+            data?.languageLimitList?.map((languageLimit) => ({
+              language: languageLimit,
+            })) ?? [],
         },
         typeList: {
           create: data.typeList.map((type) => ({

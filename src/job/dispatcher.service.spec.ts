@@ -19,7 +19,7 @@ describe('DispatcherService', () => {
   };
 
   const mockJobRepository = {
-    findJobInstanceByUuid: jest.fn(),
+    findJobInstancesByUuid: jest.fn(),
     upsertJobInstance: jest.fn(),
   };
 
@@ -53,10 +53,10 @@ describe('DispatcherService', () => {
       const uuid = 'test-uuid';
       const key = 'PROBLEM_BOJ_COLLECT';
       const jobInstances = [
-        { result: { data: 'result1' } },
-        { result: { data: 'result2' } },
+        { result: { data: 'result1' }, startedAt: new Date('2021-01-01') },
+        { result: { data: 'result2' }, startedAt: new Date('2021-01-02') },
       ];
-      mockJobRepository.findJobInstanceByUuid.mockResolvedValueOnce(
+      mockJobRepository.findJobInstancesByUuid.mockResolvedValueOnce(
         jobInstances,
       );
 
@@ -64,7 +64,7 @@ describe('DispatcherService', () => {
       const result = await service.getNextData({ key, uuid });
 
       // Then
-      expect(jobRepository.findJobInstanceByUuid).toHaveBeenCalledWith(uuid);
+      expect(jobRepository.findJobInstancesByUuid).toHaveBeenCalledWith(uuid);
       expect(result).toEqual({ data: 'result2' });
     });
 
@@ -72,13 +72,13 @@ describe('DispatcherService', () => {
       // Given
       const uuid = 'test-uuid';
       const key = 'PROBLEM_BOJ_COLLECT';
-      mockJobRepository.findJobInstanceByUuid.mockResolvedValueOnce([]);
+      mockJobRepository.findJobInstancesByUuid.mockResolvedValueOnce([]);
 
       // When
       const result = await service.getNextData({ key, uuid });
 
       // Then
-      expect(jobRepository.findJobInstanceByUuid).toHaveBeenCalledWith(uuid);
+      expect(jobRepository.findJobInstancesByUuid).toHaveBeenCalledWith(uuid);
       expect(result).toBeUndefined();
     });
   });
@@ -93,7 +93,7 @@ describe('DispatcherService', () => {
       };
 
       mockJobRegistry.get.mockReturnValueOnce(jobRunner);
-      mockJobRepository.findJobInstanceByUuid.mockResolvedValueOnce([]);
+      mockJobRepository.findJobInstancesByUuid.mockResolvedValueOnce([]);
 
       // When
       const result = await service.dispatch(key, data);
@@ -144,7 +144,7 @@ describe('DispatcherService', () => {
       };
 
       mockJobRegistry.get.mockReturnValueOnce(jobRunner);
-      mockJobRepository.findJobInstanceByUuid.mockResolvedValueOnce([
+      mockJobRepository.findJobInstancesByUuid.mockResolvedValueOnce([
         { result: previousResult },
       ]);
 
@@ -163,7 +163,7 @@ describe('DispatcherService', () => {
       const data = { uuid: 'test-uuid', param1: 'value1' };
 
       mockJobRegistry.get.mockReturnValueOnce(null);
-      mockJobRepository.findJobInstanceByUuid.mockResolvedValueOnce([]);
+      mockJobRepository.findJobInstancesByUuid.mockResolvedValueOnce([]);
 
       // When & Then
       await expect(service.dispatch(key, data)).rejects.toThrow(
@@ -191,7 +191,7 @@ describe('DispatcherService', () => {
       const jobRunner = { run: jest.fn().mockRejectedValueOnce(error) };
 
       mockJobRegistry.get.mockReturnValueOnce(jobRunner);
-      mockJobRepository.findJobInstanceByUuid.mockResolvedValueOnce([]);
+      mockJobRepository.findJobInstancesByUuid.mockResolvedValueOnce([]);
 
       // When & Then
       await expect(service.dispatch(key, data)).rejects.toThrow(

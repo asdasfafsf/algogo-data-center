@@ -21,14 +21,22 @@ export type AcmicpcResponse = {
   inputOutputList: AcmicpcInputOutput[];
   subTask: string;
 
+  subTaskList: AcmicpcSubTask[];
+  customExample: string;
+  customImplementation: string;
+  customGrader: string;
+  customNotes: string;
+  customAttachment: string;
+  customSample: string;
+  problemSource: string;
+  languageLimitList: string[];
   input: string;
   output: string;
+  style: string;
 
   content: string;
   protocol: string;
   etc: string;
-
-  style: string;
 
   isSpecialJudge: boolean;
   isSubTask: boolean;
@@ -36,6 +44,13 @@ export type AcmicpcResponse = {
   isInteractive: boolean;
   isTwoStep: boolean;
   isClass: boolean;
+  isLanguageRestrict: boolean;
+};
+
+export type AcmicpcSubTask = {
+  order: number;
+  title: string;
+  content: string;
 };
 
 export type AcmicpcInputOutput = {

@@ -104,15 +104,17 @@ export class BatchService {
         const elapsedTime = getElapsedTime(startedAt, finishedAt);
         console.error(error);
 
-        await this.batchRepository.updateBatchInstance({
-          no: batchPlan.no,
-          state: 'FAILED',
-          startedAt,
-          finishedAt,
-          elapsedTime,
-          errorCode: error.code,
-          errorMessage: error.message,
-        });
+        this.batchRepository
+          .updateBatchInstance({
+            no: batchPlan.no,
+            state: 'FAILED',
+            startedAt,
+            finishedAt,
+            elapsedTime,
+            errorCode: error.code,
+            errorMessage: error.message,
+          })
+          .catch((error) => console.log(error));
       });
   }
 }
