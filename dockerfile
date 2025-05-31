@@ -32,6 +32,7 @@ COPY --from=builder /usr/src/app/package.json ./
 COPY --from=builder /usr/src/app/pnpm-lock.yaml ./
 COPY --from=builder /usr/src/app/prisma ./prisma
 
+RUN npx prisma generate
 RUN pnpm install --prod
 # RUN npx prisma generate
 
