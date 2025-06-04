@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model BatchDefinition {
@@ -98,6 +99,20 @@ model JobInstance {
   @@map("JOB_INSTANCE")
 }
 
+
+model TodayProblem {
+  no Int @id @default(autoincrement()) @map("TODAY_PROBLEM_NO")
+  problemUuid String @map("TODAY_PROBLEM_UUID") @db.VarChar(36)
+  createdAt DateTime @default(now()) @map("TODAY_PROBLEM_CREATED_AT")
+  updatedAt DateTime @updatedAt @map("TODAY_PROBLEM_UPDATED_AT")
+
+  problemV2 ProblemV2 @relation(fields: [problemUuid], references: [uuid])
+  
+  @@map("TODAY_PROBLEM")
+  @@index([createdAt])
+  @@index([problemUuid])
+}
+
 model ProblemV2 {
   no                Int     @id @default(autoincrement()) @map("PROBLEM_V2_NO")
   uuid              String  @unique @default(uuid()) @map("PROBLEM_V2_UUID") @db.VarChar(36)
@@ -138,7 +153,8 @@ model ProblemV2 {
   typeList          ProblemV2Type[]
   subTaskList       ProblemV2SubTask[]
   languageLimitList ProblemV2LanguageLimit[]
-
+  todayProblemList    TodayProblem[]
+  
   customExample        String? @map("PROBLEM_V2_CUSTOM_EXAMPLE") @db.Text()
   customImplementation String? @map("PROBLEM_V2_CUSTOM_IMPLEMENTATION") @db.Text()
   customGrader         String? @map("PROBLEM_V2_CUSTOM_GRADER") @db.Text()
@@ -438,16 +454,20 @@ model CodeTemplate {
 }
 
 model ProblemCode {
-  no        Int      @id @default(autoincrement()) @map("PROBLEM_CODE_NO")
-  userNo    Int      @map("USER_NO")
-  problemNo Int      @map("PROBLEM_NO")
-  language  String   @map("PROBLEM_CODE_LANGUAGE")
-  content   String   @map("PROBLEM_CODE_CONTENT") @db.Text()
-  createdAt DateTime @default(now()) @map("PROBLEM_CODE_CREATED_AT")
-  updatedAt DateTime @default(now()) @map("PROBLEM_CODE_UPDATED_AT")
+  no          Int      @id @default(autoincrement()) @map("PROBLEM_CODE_NO")
+  userNo      Int      @map("USER_NO")
+  problemUuid String   @map("PROBLEM_UUID")
+  language    String   @map("PROBLEM_CODE_LANGUAGE")
+  content     String   @map("PROBLEM_CODE_CONTENT") @db.Text()
+  createdAt   DateTime @default(now()) @map("PROBLEM_CODE_CREATED_AT")
+  updatedAt   DateTime @default(now()) @map("PROBLEM_CODE_UPDATED_AT")
 
-  @@unique([userNo])
-  @@index([userNo])
-  @@index([userNo, problemNo])
+  @@unique([userNo, problemUuid, language])
+  @@index([userNo, problemUuid])
+  @@index([updatedAt])
   @@map("PROBLEM_CODE")
 }
+
+
+
+
