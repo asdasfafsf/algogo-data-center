@@ -15,4 +15,6 @@ export const validationSchema = Joi.object({
   S3_BUCKET_NAME: Joi.string().required(),
   S3_REGION: Joi.string().required(),
   S3_ENDPOINT: Joi.string().required(),
+
+  TODAY_PROBLEM_MAX_DAYS: Joi.number().required(),
 });
