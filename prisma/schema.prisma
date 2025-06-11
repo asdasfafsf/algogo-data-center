@@ -105,11 +105,12 @@ model TodayProblem {
   problemUuid String @map("TODAY_PROBLEM_UUID") @db.VarChar(36)
   createdAt DateTime @default(now()) @map("TODAY_PROBLEM_CREATED_AT")
   updatedAt DateTime @updatedAt @map("TODAY_PROBLEM_UPDATED_AT")
-
+  servedAt DateTime @map("TODAY_PROBLEM_SERVED_AT")
   problemV2 ProblemV2 @relation(fields: [problemUuid], references: [uuid])
   
   @@map("TODAY_PROBLEM")
   @@index([createdAt])
+  @@index([servedAt])
   @@index([problemUuid])
 }
 

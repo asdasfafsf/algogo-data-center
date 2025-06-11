@@ -34,7 +34,14 @@ import { WorkerModule } from './worker/worker.module';
     }),
     BullModule.forRootAsync({
       useFactory: (bullmqConfig: ConfigType<typeof BullMQConfig>) => ({
-        connection: bullmqConfig,
+        connection: {
+          ...bullmqConfig,
+          retryDelay: 1000,
+          reconnectOnError: (err) => {
+            console.log('BullMQ reconnectOnError', err);
+            return true;
+          },
+        },
       }),
       inject: [BullMQConfig.KEY],
     }),
