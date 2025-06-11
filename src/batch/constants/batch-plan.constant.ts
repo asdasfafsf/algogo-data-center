@@ -1,5 +1,7 @@
 export const PROBLEM_BOJ = 'PROBLEM_BOJ';
+export const TODAY_PROBLEM_BOJ = 'TODAY_PROBLEM_BOJ';
 
 export const BATCH_PLAN_MAP = {
   [PROBLEM_BOJ]: PROBLEM_BOJ,
+  [TODAY_PROBLEM_BOJ]: TODAY_PROBLEM_BOJ,
 } as const;
