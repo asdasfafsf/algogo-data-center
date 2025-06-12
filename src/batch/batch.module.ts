@@ -8,6 +8,7 @@ import { BatchPlanRegistry } from './batch-plan.registry';
 import { BatchPlanService } from './batch-plan.service';
 import { BatchController } from './batch.controller';
 import { ProblemBojPlan } from './plans/problem-boj.plan';
+import { TodayProblemBojPlan } from './plans/today-problem-boj.plan';
 @Module({
   imports: [DiscoveryModule, PrismaModule, OrchestratorModule],
   providers: [
@@ -16,6 +17,7 @@ import { ProblemBojPlan } from './plans/problem-boj.plan';
     BatchPlanRegistry,
     BatchPlanService,
     ProblemBojPlan,
+    TodayProblemBojPlan,
   ],
   exports: [],
   controllers: [BatchController],
