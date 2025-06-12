@@ -264,6 +264,7 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
 
   async run({ currentDate }: { currentDate: number }) {
     // 이전 7일 문제 추출
+    currentDate = Number(currentDate);
     const previousProblems = await this.getPreviousProblems(currentDate);
     // 제출수 500인 이상 전체 문제 가져옴
     const targetProblems = await this.getTargetProblems();
