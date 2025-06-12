@@ -18,23 +18,28 @@ export class TodayProblemBojPlan implements BatchPlan {
     today.setHours(0, 0, 0, 0);
 
     const result = await this.prismaService.$queryRaw<{ day_index: number }[]>`
-      WITH date_series AS (
-        SELECT 
-          generate_series(0, 6) AS day_index,
-          DATE(${today}) + generate_series(0, 6) AS target_date
+      WITH RECURSIVE date_series AS (
+        SELECT 0 AS day_index, DATE(${today}) AS target_date
+        UNION ALL
+        SELECT day_index + 1, DATE_ADD(DATE(${today}), INTERVAL day_index + 1 DAY)
+        FROM date_series
+        WHERE day_index < 6
       )
       SELECT ds.day_index
       FROM date_series ds
-      LEFT JOIN "TODAY_PROBLEM" tp ON DATE(tp."TODAY_PROBLEM_SERVED_AT") = ds.target_date
-      WHERE tp."TODAY_PROBLEM_NO" IS NULL
+      LEFT JOIN TODAY_PROBLEM tp ON DATE(tp.TODAY_PROBLEM_SERVED_AT) = ds.target_date
+      WHERE tp.TODAY_PROBLEM_NO IS NULL
       ORDER BY ds.day_index
     `;
 
     const emptyDays = result.map((row) => row.day_index);
-    return emptyDays.map((day) => ({
-      batchDefinitionNo: batchDefinition.no,
-      state: 'PENDING',
-      data: day,
-    }));
+
+    return [
+      {
+        batchDefinitionNo: batchDefinition.no,
+        state: 'PENDING',
+        data: emptyDays,
+      },
+    ];
   }
 }
