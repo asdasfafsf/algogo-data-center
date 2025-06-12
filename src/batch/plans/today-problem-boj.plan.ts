@@ -34,12 +34,10 @@ export class TodayProblemBojPlan implements BatchPlan {
 
     const emptyDays = result.map((row) => row.day_index);
 
-    return [
-      {
-        batchDefinitionNo: batchDefinition.no,
-        state: 'PENDING',
-        data: emptyDays,
-      },
-    ];
+    return emptyDays.map((day) => ({
+      batchDefinitionNo: batchDefinition.no,
+      state: 'PENDING',
+      data: day,
+    }));
   }
 }
