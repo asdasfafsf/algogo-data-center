@@ -64,7 +64,10 @@ export class BatchService {
           this.logger.log('start execute batch');
           for (const batchPlan of batchPlanList) {
             this.logger.log(batchPlan);
-            this.executeBatch(batchPlan);
+            this.executeBatch({
+              ...batchPlan,
+              jobName: batchDefinition.jobName,
+            });
           }
         })
         .catch((error) => {
@@ -80,11 +83,13 @@ export class BatchService {
     );
   }
 
-  async executeBatch(batchPlan: BatchInstanceDto & { name: string }) {
+  async executeBatch(
+    batchPlan: BatchInstanceDto & { name: string; jobName: string },
+  ) {
     this.logger.log(`BatchService - executeBatch - ${batchPlan.name}`);
     const startedAt = new Date();
     this.orchestratorService
-      .orchestrate(batchPlan.name, batchPlan.data)
+      .orchestrate(batchPlan.jobName, batchPlan.data)
       .then(async (result) => {
         const finishedAt = new Date();
         const elapsedTime = getElapsedTime(startedAt, finishedAt);
