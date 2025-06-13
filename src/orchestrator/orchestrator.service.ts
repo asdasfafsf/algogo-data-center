@@ -1,12 +1,12 @@
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Cache } from 'cache-manager';
-import { OrchestratorRepository } from './orchestrator.repository';
-import { uuidv7 } from 'uuidv7';
-import { FlowProducer, JobNode, QueueEvents } from 'bullmq';
-import { BullMQConfig } from '../config/BullMQConfig';
 import { ConfigType } from '@nestjs/config';
+import { FlowProducer, JobNode, QueueEvents } from 'bullmq';
+import { Cache } from 'cache-manager';
+import { uuidv7 } from 'uuidv7';
+import { BullMQConfig } from '../config/BullMQConfig';
 import { ORCHESTRATOR_FLOW_PRODUCER } from './constants/injection';
+import { OrchestratorRepository } from './orchestrator.repository';
 
 @Injectable()
 export class OrchestratorService {
@@ -116,22 +116,19 @@ export class OrchestratorService {
     const jobs = await this.flowProducer.add(jobOption);
     const flatJobNodes = await this.toFlatJobNode(jobs);
 
-    const settled = await Promise.allSettled(
-      flatJobNodes.map((jobNode) =>
-        jobNode.job.waitUntilFinished(this.queueEvents),
-      ),
-    );
-
-    const rejectedJob = settled.find((elem) => elem.status === 'rejected');
+    for (const jobNode of flatJobNodes) {
+      try {
+        await jobNode.job.waitUntilFinished(this.queueEvents);
+      } catch (err) {
+        return {
+          state: 'FAILED',
+          errorCode: err?.code,
+          errorMessage: err?.message,
+        };
+      }
+    }
 
     this.logger.log(`OrchestratorService - orchestrate - ${name} - 완료`);
-    if (rejectedJob) {
-      return {
-        state: 'FAILED',
-        errorCode: rejectedJob.reason?.code,
-        errorMessage: rejectedJob.reason?.message,
-      };
-    }
 
     return {
       state: 'SUCCESS',
