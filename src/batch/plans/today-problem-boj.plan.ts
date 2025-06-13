@@ -23,7 +23,7 @@ export class TodayProblemBojPlan implements BatchPlan {
         UNION ALL
         SELECT day_index + 1, DATE_ADD(DATE(${today}), INTERVAL day_index + 1 DAY)
         FROM date_series
-        WHERE day_index <= 6
+        WHERE day_index < 7
       )
       SELECT ds.day_index
       FROM date_series ds
@@ -31,7 +31,6 @@ export class TodayProblemBojPlan implements BatchPlan {
       WHERE tp.TODAY_PROBLEM_NO IS NULL
       ORDER BY ds.day_index
     `;
-
     const emptyDays = result.map((row) => row.day_index);
 
     return emptyDays.map((day) => ({

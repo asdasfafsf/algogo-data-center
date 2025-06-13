@@ -73,6 +73,7 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
     sevenDaysAgo.setDate(
       sevenDaysAgo.getDate() - this.todayProblemConfig.maxDays + currentDate,
     );
+    sevenDaysAgo.setHours(0, 0, 0, 0);
 
     const result = await this.prismaService.todayProblem.findMany({
       select: {
@@ -245,11 +246,13 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
         Math.floor(Math.random() * Math.min(10, sortedWeightedProblems.length))
       ];
 
+    const servedAt = new Date(
+      new Date().setDate(new Date().getDate() + currentDate),
+    );
+    servedAt.setHours(0, 0, 0, 0);
     return {
       ...targetProblem,
-      servedAt: new Date(
-        new Date().setDate(new Date().getDate() + currentDate),
-      ),
+      servedAt,
     };
   }
 
