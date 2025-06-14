@@ -15,7 +15,13 @@ import { OrchestratorController } from './orchestrator.controller';
     {
       provide: ORCHESTRATOR_FLOW_PRODUCER,
       useFactory: (bullmqConfig: ConfigType<typeof BullMQConfig>) =>
-        new FlowProducer({ connection: bullmqConfig }),
+        new FlowProducer({
+          connection: {
+            host: bullmqConfig.host,
+            port: bullmqConfig.port,
+            password: bullmqConfig.password,
+          },
+        }),
       inject: [BullMQConfig.KEY],
     },
     OrchestratorService,
