@@ -296,20 +296,20 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
       );
       todayProblems.push(todayProblem1);
 
-      // if (i === 2) {
-      //   const todayProblem2 = this.generateTodayProblem(
-      //     weightedProblems
-      //       .filter((elem) => elem.uuid !== todayProblem1.uuid)
-      //       .filter(
-      //         (elem) =>
-      //           !elem.typeList.some((type) =>
-      //             todayProblem1.typeList.includes(type),
-      //           ),
-      //       ),
-      //     currentDate,
-      //   );
-      //   todayProblems.push(todayProblem2);
-      // }
+      if (i === 3) {
+        const todayProblem2 = this.generateTodayProblem(
+          weightedProblems
+            .filter((elem) => elem.uuid !== todayProblem1.uuid)
+            .filter(
+              (elem) =>
+                !elem.typeList.some((type) =>
+                  todayProblem1.typeList.includes(type),
+                ),
+            ),
+          currentDate,
+        );
+        todayProblems.push(todayProblem2);
+      }
     }
 
     todayProblems.sort((a, b) => a.level - b.level);
