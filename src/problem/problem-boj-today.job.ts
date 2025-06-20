@@ -190,16 +190,11 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
     const todayProblems = [];
 
     for (const problem of targetProblems) {
-      const totalWeight = problem.typeList.reduce(
-        (acc, type) => acc + typeWeight[type],
-        0,
-      );
-
-      const averageWeight = totalWeight / problem.typeList.length;
-
+      const types = [...problem.typeList.map((type) => typeWeight[type])];
+      const minWeight = Math.min(...types);
       todayProblems.push({
         ...problem,
-        weight: averageWeight,
+        weight: minWeight,
       });
     }
 
@@ -213,7 +208,7 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
    */
   groupByLevel(weightedProblems: TargetProblem[]) {
     const groupedByLevel = weightedProblems.reduce((acc, problem) => {
-      const level = Math.floor(problem.level / 4);
+      const level = Math.floor(problem.level / 3);
       if (!acc[level]) acc[level] = [];
       acc[level].push(problem);
       return acc;
@@ -301,20 +296,20 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
       );
       todayProblems.push(todayProblem1);
 
-      if (i === 2) {
-        const todayProblem2 = this.generateTodayProblem(
-          weightedProblems
-            .filter((elem) => elem.uuid !== todayProblem1.uuid)
-            .filter(
-              (elem) =>
-                !elem.typeList.some((type) =>
-                  todayProblem1.typeList.includes(type),
-                ),
-            ),
-          currentDate,
-        );
-        todayProblems.push(todayProblem2);
-      }
+      // if (i === 2) {
+      //   const todayProblem2 = this.generateTodayProblem(
+      //     weightedProblems
+      //       .filter((elem) => elem.uuid !== todayProblem1.uuid)
+      //       .filter(
+      //         (elem) =>
+      //           !elem.typeList.some((type) =>
+      //             todayProblem1.typeList.includes(type),
+      //           ),
+      //       ),
+      //     currentDate,
+      //   );
+      //   todayProblems.push(todayProblem2);
+      // }
     }
 
     todayProblems.sort((a, b) => a.level - b.level);

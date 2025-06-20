@@ -37,6 +37,8 @@ import { WorkerModule } from './worker/worker.module';
         connection: {
           ...bullmqConfig,
           retryDelay: 1000,
+          removeOnComplete: true,
+          removeOnFail: true,
           reconnectOnError: (err) => {
             console.log('BullMQ reconnectOnError', err);
             return true;
