@@ -190,16 +190,11 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
     const todayProblems = [];
 
     for (const problem of targetProblems) {
-      const totalWeight = problem.typeList.reduce(
-        (acc, type) => acc + typeWeight[type],
-        0,
-      );
-
-      const averageWeight = totalWeight / problem.typeList.length;
-
+      const types = [...problem.typeList.map((type) => typeWeight[type])];
+      const minWeight = Math.min(...types);
       todayProblems.push({
         ...problem,
-        weight: averageWeight,
+        weight: minWeight,
       });
     }
 
