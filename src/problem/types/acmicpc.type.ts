@@ -65,3 +65,9 @@ export type AcmicpcRequest = {
   htmlUrl?: string;
   html?: string;
 };
+
+export type AcmicpcUser = {
+  userId: string;
+  solves: number[];
+  fails: number[];
+};
