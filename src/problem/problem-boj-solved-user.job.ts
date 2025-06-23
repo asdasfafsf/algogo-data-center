@@ -2,7 +2,15 @@ import { JobRunner } from '../job/interfaces/job-runner.interface';
 import { NemoService } from '../nemo/nemo.service';
 import { SolvedUser } from './types/solved.type';
 import { PrismaService } from '../prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
+import { JobHandler } from 'src/job/decorators/job-handler.decorator';
+import {
+  JOB_HANDLER_MAP,
+  PROBLEM_BOJ_SOLVED_USER,
+} from '../job/constants/job.constants';
 
+@Injectable()
+@JobHandler(JOB_HANDLER_MAP[PROBLEM_BOJ_SOLVED_USER])
 export class ProblemBojSolvedUserJob implements JobRunner<any, any> {
   constructor(
     private readonly nemoService: NemoService,
@@ -35,15 +43,22 @@ export class ProblemBojSolvedUserJob implements JobRunner<any, any> {
       throw new Error('solvedCount is not changed');
     }
 
-    await this.prismaService.problemSiteAccount.update({
+    await this.prismaService.problemSiteAccount.upsert({
       where: {
         userUuid_provider: {
           userUuid,
           provider: 'BOJ',
         },
       },
-      data: {
+      update: {
         solvedCount: solvedUser.solvedCount,
+      },
+      create: {
+        userUuid,
+        handle,
+        provider: 'BOJ',
+        solvedCount: solvedUser.solvedCount,
+        failedCount: 0,
       },
     });
 

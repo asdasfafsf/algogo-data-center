@@ -23,4 +23,15 @@ export class OrchestratorController {
       currentDate: Number(currentDate),
     });
   }
+
+  @Get('user')
+  async user(
+    @Query('userUuid') userUuid: string,
+    @Query('handle') handle: string,
+  ) {
+    return await this.orchestratorService.orchestrate('PROBLEM_BOJ_USER', {
+      userUuid,
+      handle,
+    });
+  }
 }

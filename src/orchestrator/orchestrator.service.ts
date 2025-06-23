@@ -115,17 +115,20 @@ export class OrchestratorService {
     const jobOption = await this.generateJob(stepList, newData);
     const jobs = await this.flowProducer.add(jobOption);
     const flatJobNodes = await this.toFlatJobNode(jobs);
+    const results = await Promise.allSettled(
+      flatJobNodes.map((jobNode) =>
+        jobNode.job.waitUntilFinished(this.queueEvents),
+      ),
+    );
 
-    for (const jobNode of flatJobNodes) {
-      try {
-        await jobNode.job.waitUntilFinished(this.queueEvents);
-      } catch (err) {
-        return {
-          state: 'FAILED',
-          errorCode: err?.code,
-          errorMessage: err?.message,
-        };
-      }
+    const failed = results.filter((result) => result.status === 'rejected');
+
+    if (failed.length > 0) {
+      return {
+        state: 'FAILED',
+        errorCode: failed[0].reason?.code,
+        errorMessage: failed[0].reason?.message,
+      };
     }
 
     this.logger.log(`OrchestratorService - orchestrate - ${name} - 완료`);
