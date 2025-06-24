@@ -61,6 +61,28 @@ export class ProblemAcmicpcUserJob implements JobRunner<any, any> {
         problemUuid: problem.uuid,
         state: 'SOLVED',
       })),
+      skipDuplicates: true,
+    });
+
+    const failedProblemUuids = await this.prismaService.problemV2.findMany({
+      where: {
+        source: 'BOJ',
+        sourceId: {
+          in: acmicpcUser.fails.map(String),
+        },
+      },
+      select: {
+        uuid: true,
+      },
+    });
+
+    await this.prismaService.userProblemState.createMany({
+      data: failedProblemUuids.map((problem) => ({
+        userUuid,
+        problemUuid: problem.uuid,
+        state: 'FAILED',
+      })),
+      skipDuplicates: true,
     });
 
     return {
