@@ -9,6 +9,7 @@ import { BatchPlanService } from './batch-plan.service';
 import { BatchController } from './batch.controller';
 import { ProblemBojPlan } from './plans/problem-boj.plan';
 import { TodayProblemBojPlan } from './plans/today-problem-boj.plan';
+import { ProblemBojUserPlan } from './plans/problem-boj-user';
 @Module({
   imports: [DiscoveryModule, PrismaModule, OrchestratorModule],
   providers: [
@@ -18,6 +19,7 @@ import { TodayProblemBojPlan } from './plans/today-problem-boj.plan';
     BatchPlanService,
     ProblemBojPlan,
     TodayProblemBojPlan,
+    ProblemBojUserPlan,
   ],
   exports: [],
   controllers: [BatchController],
