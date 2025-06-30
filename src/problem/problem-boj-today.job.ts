@@ -265,10 +265,16 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
     currentDate = Number(currentDate);
     const previousProblems = await this.getPreviousProblems(currentDate);
     // 제출수 500인 이상 전체 문제 가져옴
+    const previousProblemUuids = new Set(
+      previousProblems.map((problem) => problem.uuid),
+    );
     const targetProblems = await this.getTargetProblems();
+    const realTargetProblems = targetProblems.filter((problem) =>
+      previousProblemUuids.has(problem.uuid),
+    );
 
     const groupedByLevelPreviousProblems = this.groupByLevel(previousProblems);
-    const groupedByLevelTargetProblems = this.groupByLevel(targetProblems);
+    const groupedByLevelTargetProblems = this.groupByLevel(realTargetProblems);
 
     const todayProblems = [];
     for (let i = 0; i < groupedByLevelTargetProblems.length; i++) {
