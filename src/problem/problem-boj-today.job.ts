@@ -269,8 +269,8 @@ export class ProblemBojTodayJob implements JobRunner<any, any> {
       previousProblems.map((problem) => problem.uuid),
     );
     const targetProblems = await this.getTargetProblems();
-    const realTargetProblems = targetProblems.filter((problem) =>
-      previousProblemUuids.has(problem.uuid),
+    const realTargetProblems = targetProblems.filter(
+      (problem) => !previousProblemUuids.has(problem.uuid),
     );
 
     const groupedByLevelPreviousProblems = this.groupByLevel(previousProblems);
